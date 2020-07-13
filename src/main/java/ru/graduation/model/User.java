@@ -1,6 +1,5 @@
 package ru.graduation.model;
 
-import org.hibernate.Hibernate;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -12,14 +11,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User {
-    public static final int START_SEQ = 100000;
-
-    @Id
-    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1, initialValue = START_SEQ)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
-    protected Integer id;
-
+public class User extends AbstractBaseEntity {
     @NotBlank
     @Size(min = 2, max = 100)
     @Column(name = "name", nullable = false)
@@ -54,7 +46,7 @@ public class User {
     }
 
     public User(Integer id, String name, String login, String password, Collection<Role> roles) {
-        this.id = id;
+        super(id);
         this.name = name;
         this.login = login;
         this.password = password;
@@ -110,22 +102,5 @@ public class User {
                 ", password='" + password + '\'' +
                 ", roles=" + roles +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || !getClass().equals(Hibernate.getClass(o))) {
-            return false;
-        }
-        User that = (User) o;
-        return id != null && id.equals(that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id == null ? 0 : id;
     }
 }
