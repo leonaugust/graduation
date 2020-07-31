@@ -1,28 +1,17 @@
 package ru.graduation.controller;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlConfig;
-import org.springframework.test.context.junit4.SpringRunner;
+import ru.graduation.AbstractTest;
 import ru.graduation.model.User;
 import ru.graduation.util.exception.NotFoundException;
 
 import java.util.List;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.graduation.UserTestData.*;
 
-@ContextConfiguration({
-        "classpath:spring/spring-app.xml",
-        "classpath:spring/spring-db.xml"
-})
-@RunWith(SpringRunner.class)
-@Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-public class UserControllerTest {
+public class UserControllerTest extends AbstractTest {
     @Autowired
     private UserController controller;
 
@@ -47,7 +36,6 @@ public class UserControllerTest {
     public void get() {
         User user = controller.get(USER_ID);
         USER_MATCHER.assertMatch(user, USER);
-        Assert.assertEquals(user, USER);
     }
 
     @Test
