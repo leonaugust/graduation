@@ -1,4 +1,4 @@
-package ru.graduation.repository;
+package ru.graduation.repository.user;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;

@@ -9,7 +9,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.graduation.model.User;
-import ru.graduation.repository.UserRepository;
+import ru.graduation.repository.user.UserRepository;
 
 import java.net.URI;
 import java.util.List;
