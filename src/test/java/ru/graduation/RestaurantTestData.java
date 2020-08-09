@@ -16,7 +16,7 @@ public class RestaurantTestData {
     public static final int KRUSTY_KRAB_ID = START_SEQ + 4;
 
     public static final Restaurant RATATOUILLE = new Restaurant(RATATOUILLE_ID, "La Ratatouille", "Disney universe", "www.la-ratatouille.com");
-    public static final Restaurant PIZZA_PLANET = new Restaurant(PIZZA_PLANET_ID, "Pizza Planet", "Pixar universe", "www.pizza-planet.com");
+    public static final Restaurant PIZZA_PLANET = new Restaurant(PIZZA_PLANET_ID, "Pizza Planet", "Disney universe", "www.pizza-planet.com");
     public static final Restaurant KRUSTY_KRAB = new Restaurant(KRUSTY_KRAB_ID, "The Krusty Krab ", "831 Bottom Feeder Lane", "www.krusty-krab.com");
 
 
