@@ -1,6 +1,5 @@
 package ru.graduation.repository.meal;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import ru.graduation.model.Meal;
 
@@ -8,8 +7,6 @@ import java.util.List;
 
 @Repository
 public class MealRepository {
-    private static final Sort SORT_NAME = Sort.by(Sort.Direction.ASC, "name");
-
     private final CrudMealRepository crudRepository;
 
     public MealRepository(CrudMealRepository crudRepository) {
@@ -28,7 +25,7 @@ public class MealRepository {
         return crudRepository.findById(id).orElse(null);
     }
 
-    public List<Meal> getAll() {
-        return crudRepository.findAll(SORT_NAME);
+    public List<Meal> getAll(int restaurantId) {
+        return crudRepository.getAll(restaurantId);
     }
 }

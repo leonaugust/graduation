@@ -27,10 +27,10 @@ public class MealController {
 
     private final Logger logger = LoggerFactory.getLogger(MealController.class);
 
-    @GetMapping
-    public List<Meal> getAll() {
+    @GetMapping()
+    public List<Meal> getAll(@RequestParam int id) {
         logger.info("getAll meals");
-        return repository.getAll();
+        return repository.getAll(id);
     }
 
     @GetMapping("/{id}")

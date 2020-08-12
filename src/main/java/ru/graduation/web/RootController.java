@@ -44,8 +44,9 @@ public class RootController {
     }
 
     @GetMapping("/meals")
-    public String getMeals(Model model) {
-        model.addAttribute("meals", mealController.getAll());
+    public String getMeals(Model model, HttpServletRequest request) {
+        int id = Integer.parseInt(request.getParameter("id"));
+        model.addAttribute("meals", mealController.getAll(id));
         return "meals";
     }
 }

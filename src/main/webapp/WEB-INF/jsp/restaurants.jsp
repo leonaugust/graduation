@@ -14,7 +14,7 @@
         <th>Name</th>
         <th>Address</th>
         <th>Website</th>
-        <th></th>
+        <th>See menu</th>
         <th></th>
     </tr>
     </thead>
@@ -24,7 +24,7 @@
             <td>${restaurant.name}</td>
             <td>${restaurant.address}</td>
             <td>${restaurant.website}</td>
-            <td></td>
+            <td><a href="meals?id=${restaurant.id}">See menu</a></td>
             <td></td>
         </tr>
     </c:forEach>
