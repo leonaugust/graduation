@@ -16,10 +16,10 @@ INSERT INTO user_roles (role, user_id)
 VALUES ('USER', 100000),
        ('ADMIN', 100001);
 
-INSERT INTO restaurants (name, address, website)
-VALUES ('La Ratatouille', 'Disney universe', 'www.la-ratatouille.com'),
-       ('Pizza Planet', 'Disney universe', 'www.pizza-planet.com'),
-       ('The Krusty Krab ', '831 Bottom Feeder Lane', 'www.krusty-krab.com');
+INSERT INTO restaurants (name, address, website, user_id)
+VALUES ('La Ratatouille', 'Disney universe', 'www.la-ratatouille.com', 100001),
+       ('Pizza Planet', 'Disney universe', 'www.pizza-planet.com', 100001),
+       ('The Krusty Krab ', '831 Bottom Feeder Lane', 'www.krusty-krab.com', 100001);
 
 INSERT INTO meals (name, price, restaurant_id)
 VALUES ('Ratatouille', 25, 100002),
