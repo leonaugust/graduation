@@ -40,3 +40,6 @@ VALUES ('Ratatouille', 25, 100002),
        ('Bacon Cheeseburger', 7, 100004),
        ('Bob''s Burger Barn', 6.23, 100004);
 
+INSERT INTO votes(user_id, date_time, restaurant_id)
+VALUES (100000, '2020-08-14 16:37:00', 100002),
+       (100001, '2020-08-14 17:20:00', 100003);
