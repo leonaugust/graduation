@@ -9,8 +9,8 @@ FROM meals;
 ALTER SEQUENCE global_seq RESTART WITH 100000;
 
 INSERT INTO users (name, login, password)
-VALUES ('User', 'user', 'password'),
-       ('Admin', 'admin', 'password');
+VALUES ('user', 'user', 'password'),
+       ('admin', 'admin', 'password');
 
 INSERT INTO user_roles (role, user_id)
 VALUES ('USER', 100000),

@@ -9,8 +9,8 @@ public class UserTestData {
     public static final int NOT_FOUND = 10;
     public static final int USER_ID = User.START_SEQ;
     public static final int ADMIN_ID = User.START_SEQ + 1;
-    public static final User USER = new User(USER_ID, "User", "user", "password", Role.USER);
-    public static final User ADMIN = new User(ADMIN_ID, "Admin", "admin", "password", Role.ADMIN);
+    public static final User USER = new User(USER_ID, "user", "user", "password", Role.USER);
+    public static final User ADMIN = new User(ADMIN_ID, "admin", "admin", "password", Role.ADMIN);
     public static TestMatcher<User> USER_MATCHER = TestMatcher.usingFieldsComparator(User.class, "roles");
 
     public static User getNew() {
