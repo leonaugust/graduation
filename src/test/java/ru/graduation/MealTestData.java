@@ -11,11 +11,11 @@ public class MealTestData {
             TestMatcher.usingFieldsComparator(Meal.class, "restaurant");
 
     public static final int NOT_FOUND = 10;
-    public static final int MEAL1_ID = START_SEQ + 5;
-    public static final int MEAL2_ID = START_SEQ + 6;
-    public static final int MEAL3_ID = START_SEQ + 7;
-    public static final int MEAL4_ID = START_SEQ + 8;
-    public static final int MEAL5_ID = START_SEQ + 9;
+    public static final int MEAL1_ID = START_SEQ + 8;
+    public static final int MEAL2_ID = START_SEQ + 9;
+    public static final int MEAL3_ID = START_SEQ + 10;
+    public static final int MEAL4_ID = START_SEQ + 11;
+    public static final int MEAL5_ID = START_SEQ + 12;
 
     public static final Meal MEAL1 = new Meal(MEAL1_ID, "Ratatouille", 25);
     public static final Meal MEAL2 = new Meal(MEAL2_ID, "Buffalo Wings", 30);

@@ -79,6 +79,6 @@ public class VoteControllerTest extends AbstractControllerTest {
                 .param("restaurantId", String.valueOf(RATATOUILLE_ID)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(VOTE_MATCHER.contentJson(List.of(VOTE1)));
+                .andExpect(VOTE_MATCHER.contentJson(List.of(VOTE1, VOTE2, VOTE4)));
     }
 }
