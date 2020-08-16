@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.graduation.TestUtil.readFromJson;
+import static ru.graduation.TestUtil.userHttpBasic;
 import static ru.graduation.UserTestData.*;
 
 public class UserControllerTest extends AbstractControllerTest {
@@ -24,7 +25,8 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void get() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID))
+        perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID)
+                .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 // https://jira.spring.io/browse/SPR-14472
@@ -33,8 +35,22 @@ public class UserControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getUnAuth() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void getForbidden() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL)
+                .with(userHttpBasic(USER)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + USER_ID))
+        perform(MockMvcRequestBuilders.delete(REST_URL + USER_ID)
+                .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertThrows(NotFoundException.class, () -> controller.get(USER_ID));
@@ -44,6 +60,7 @@ public class UserControllerTest extends AbstractControllerTest {
     void update() throws Exception {
         User updated = getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
+                .with(userHttpBasic(ADMIN))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
@@ -55,6 +72,7 @@ public class UserControllerTest extends AbstractControllerTest {
     void createWithLocation() throws Exception {
         User newUser = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(ADMIN))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newUser)))
                 .andExpect(status().isCreated());
@@ -68,7 +86,8 @@ public class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL))
+        perform(MockMvcRequestBuilders.get(REST_URL)
+                .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_MATCHER.contentJson(ADMIN, USER));

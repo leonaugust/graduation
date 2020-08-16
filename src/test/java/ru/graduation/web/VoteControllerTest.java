@@ -17,6 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.graduation.RestaurantTestData.RATATOUILLE_ID;
 import static ru.graduation.TestUtil.readFromJson;
+import static ru.graduation.TestUtil.userHttpBasic;
+import static ru.graduation.UserTestData.ADMIN;
 import static ru.graduation.VoteTestData.*;
 
 public class VoteControllerTest extends AbstractControllerTest {
@@ -27,7 +29,8 @@ public class VoteControllerTest extends AbstractControllerTest {
 
     @Test
     void get() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + VOTE1_ID))
+        perform(MockMvcRequestBuilders.get(REST_URL + VOTE1_ID)
+                .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 // https://jira.spring.io/browse/SPR-14472
@@ -36,8 +39,15 @@ public class VoteControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getUnAuth() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + VOTE1_ID))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + VOTE1_ID))
+        perform(MockMvcRequestBuilders.delete(REST_URL + VOTE1_ID)
+                .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertThrows(NotFoundException.class, () -> controller.get(VOTE1_ID));
@@ -47,6 +57,7 @@ public class VoteControllerTest extends AbstractControllerTest {
     void createWithLocation() throws Exception {
         Vote newVote = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(ADMIN))
                 .param("userId", String.valueOf(UserTestData.USER_ID))
                 .param("dateTime", "2000-10-31T01:30:00.000-05:00")
                 .param("restaurantId", String.valueOf(RATATOUILLE_ID))
@@ -64,6 +75,7 @@ public class VoteControllerTest extends AbstractControllerTest {
     @Test
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL)
+                .with(userHttpBasic(ADMIN))
                 .param("restaurantId", String.valueOf(RATATOUILLE_ID)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
