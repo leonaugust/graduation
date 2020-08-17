@@ -3,10 +3,8 @@ package ru.graduation.web;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.graduation.UserTestData;
-import ru.graduation.model.Vote;
 import ru.graduation.util.exception.NotFoundException;
 
 import java.util.List;
@@ -16,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.graduation.RestaurantTestData.RATATOUILLE_ID;
-import static ru.graduation.TestUtil.readFromJson;
 import static ru.graduation.TestUtil.userHttpBasic;
 import static ru.graduation.UserTestData.ADMIN;
 import static ru.graduation.VoteTestData.*;
@@ -55,21 +52,12 @@ public class VoteControllerTest extends AbstractControllerTest {
 
     @Test
     void createWithLocation() throws Exception {
-        Vote newVote = getNew();
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+        perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(ADMIN))
                 .param("userId", String.valueOf(UserTestData.USER_ID))
-                .param("dateTime", "2000-10-31T01:30:00.000-05:00")
                 .param("restaurantId", String.valueOf(RATATOUILLE_ID))
-                .contentType(MediaType.APPLICATION_JSON)
-        )
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
-
-        Vote created = readFromJson(action, Vote.class);
-        int newId = created.id();
-        newVote.setId(newId);
-        VOTE_MATCHER.assertMatch(created, newVote);
-        VOTE_MATCHER.assertMatch(controller.get(newId), newVote);
     }
 
     @Test

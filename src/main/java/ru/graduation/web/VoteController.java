@@ -3,7 +3,6 @@ package ru.graduation.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,6 @@ import ru.graduation.model.Vote;
 import ru.graduation.repository.vote.VoteRepository;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static ru.graduation.util.ValidationUtil.checkNotFoundWithId;
@@ -42,12 +40,10 @@ public class VoteController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Vote> createWithLocation(@RequestParam("userId") int userId,
-                                                   @RequestParam("dateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime,
                                                    @RequestParam("restaurantId") int restaurantId) {
-        logger.info("create vote, userId: {}, dateTime: {}, restaurantId: {}", userId, dateTime, restaurantId);
+        logger.info("create vote, userId: {}, restaurantId: {}", userId, restaurantId);
 
-        Vote created = repository.save(new Vote(dateTime),
-                userId, restaurantId);
+        Vote created = repository.save(userId, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
