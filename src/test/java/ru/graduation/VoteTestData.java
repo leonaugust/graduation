@@ -23,10 +23,8 @@ public class VoteTestData {
     public static final Vote VOTE3 = new Vote(VOTE3_ID, of(2020, Month.AUGUST, 14, 17, 23));
     public static final Vote VOTE4 = new Vote(VOTE4_ID, of(2020, Month.AUGUST, 14, 18, 56));
 
-    public static Vote getNew() {
-        return new Vote(null, of(2000, Month.OCTOBER, 31, 1, 30));
-    }
-
     public static final LocalDateTime TIME_AFTER_VOTING = of(2020, Month.AUGUST, 15, 23, 30);
     public static final LocalDateTime ALLOWED_VOTING_TIME = of(2020, Month.AUGUST, 12, 13, 12);
+    public static final LocalDateTime SIX_HOURS = of(2020, Month.AUGUST, 12, 18, 0);
+    public static final LocalDateTime SEVEN_HOURS = of(2020, Month.AUGUST, 12, 19, 0);
 }

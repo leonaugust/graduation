@@ -38,12 +38,18 @@ public class VoteRepository {
         this.clock = clock;
     }
 
-    public Vote save(int restaurantId, int userId) {
-        Vote v = new Vote();
-        v.setDateTime(LocalDateTime.now(clock));
-        v.setRestaurant(crudRestaurantRepository.getOne(restaurantId));
-        v.setUser(crudUserRepository.getOne(userId));
-        return crudVoteRepository.save(v);
+    public Vote save(int userId, int restaurantId) {
+        Vote existing = findByUserId(userId);
+        if (existing != null) {
+            existing.setRestaurant(crudRestaurantRepository.getOne(restaurantId));
+            return crudVoteRepository.save(existing);
+        }
+
+        Vote vote = new Vote();
+        vote.setDateTime(LocalDateTime.now(clock));
+        vote.setRestaurant(crudRestaurantRepository.getOne(restaurantId));
+        vote.setUser(crudUserRepository.getOne(userId));
+        return crudVoteRepository.save(vote);
     }
 
     public boolean delete(int id) {
@@ -52,6 +58,10 @@ public class VoteRepository {
 
     public Vote get(int id) {
         return crudVoteRepository.findById(id).orElse(null);
+    }
+
+    public Vote findByUserId(int userId) {
+        return crudVoteRepository.findByUserId(userId).orElse(null);
     }
 
     public List<Vote> getAll(int restaurantId) {

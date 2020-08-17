@@ -3,20 +3,25 @@ package ru.graduation.web;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.graduation.UserTestData;
+import ru.graduation.model.Vote;
 import ru.graduation.repository.vote.VoteRepository;
 import ru.graduation.util.exception.NotFoundException;
 
 import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.time.ZoneId.systemDefault;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.graduation.RestaurantTestData.RATATOUILLE_ID;
+import static ru.graduation.RestaurantTestData.*;
+import static ru.graduation.TestUtil.readFromJson;
 import static ru.graduation.TestUtil.userHttpBasic;
 import static ru.graduation.UserTestData.ADMIN;
 import static ru.graduation.UserTestData.USER;
@@ -57,11 +62,10 @@ public class VoteControllerTest extends AbstractControllerTest {
         assertThrows(NotFoundException.class, () -> controller.get(VOTE1_ID));
     }
 
+    //    https://stackoverflow.com/questions/24491260/mocking-time-in-java-8s-java-time-api
     @Test
     void createWithLocation() throws Exception {
-        repository.setClock(
-                Clock.fixed(ALLOWED_VOTING_TIME.atZone(systemDefault()).toInstant(), systemDefault())
-        );
+        useFixedClockAt(ALLOWED_VOTING_TIME);
 
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(USER))
@@ -72,15 +76,39 @@ public class VoteControllerTest extends AbstractControllerTest {
 
     @Test
     void createWhenClosed() throws Exception {
-        repository.setClock(
-                Clock.fixed(TIME_AFTER_VOTING.atZone(systemDefault()).toInstant(), systemDefault())
-        );
+        useFixedClockAt(TIME_AFTER_VOTING);
 
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(USER))
                 .param("userId", String.valueOf(UserTestData.USER_ID))
                 .param("restaurantId", String.valueOf(RATATOUILLE_ID)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createChangedOpinion() throws Exception {
+        useFixedClockAt(SIX_HOURS);
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(USER))
+                .param("userId", String.valueOf(UserTestData.USER_ID))
+                .param("restaurantId", String.valueOf(RATATOUILLE_ID)))
+                .andExpect(status().isCreated());
+        Vote created = readFromJson(action, Vote.class);
+
+        assertThat(controller.get(created.getId()).getRestaurant().getName())
+                .isEqualTo(RATATOUILLE.getName());
+
+        useFixedClockAt(SEVEN_HOURS);
+        action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(USER))
+                .param("userId", String.valueOf(UserTestData.USER_ID))
+                .param("restaurantId", String.valueOf(PIZZA_PLANET_ID)))
+                .andExpect(status().isCreated());
+        Vote updated = readFromJson(action, Vote.class);
+
+        assertThat(controller.get(created.getId()).getRestaurant().getName())
+                .isEqualTo(PIZZA_PLANET.getName());
+        assertThat(created.id()).isEqualTo(updated.id());
     }
 
     @Test
@@ -91,5 +119,9 @@ public class VoteControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(VOTE_MATCHER.contentJson(List.of(VOTE1, VOTE2, VOTE4)));
+    }
+
+    void useFixedClockAt(LocalDateTime dateTime) {
+        repository.setClock(Clock.fixed(dateTime.atZone(systemDefault()).toInstant(), systemDefault()));
     }
 }
