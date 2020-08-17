@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.graduation.model.Vote;
 import ru.graduation.repository.vote.VoteRepository;
@@ -38,10 +39,14 @@ public class VoteController {
         return checkNotFoundWithId(repository.get(id), id);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<Vote> createWithLocation(@RequestParam("userId") int userId,
                                                    @RequestParam("restaurantId") int restaurantId) {
         logger.info("create vote, userId: {}, restaurantId: {}", userId, restaurantId);
+
+        if (repository.now().isAfter(VoteRepository.VOTING_CLOSED)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Voting closed");
+        }
 
         Vote created = repository.save(userId, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()

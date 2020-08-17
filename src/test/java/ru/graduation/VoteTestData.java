@@ -2,6 +2,7 @@ package ru.graduation;
 
 import ru.graduation.model.Vote;
 
+import java.time.LocalDateTime;
 import java.time.Month;
 
 import static java.time.LocalDateTime.of;
@@ -25,4 +26,7 @@ public class VoteTestData {
     public static Vote getNew() {
         return new Vote(null, of(2000, Month.OCTOBER, 31, 1, 30));
     }
+
+    public static final LocalDateTime TIME_AFTER_VOTING = of(2020, Month.AUGUST, 15, 23, 30);
+    public static final LocalDateTime ALLOWED_VOTING_TIME = of(2020, Month.AUGUST, 12, 13, 12);
 }

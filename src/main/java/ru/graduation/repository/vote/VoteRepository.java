@@ -9,6 +9,7 @@ import ru.graduation.repository.user.CrudUserRepository;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Component
@@ -24,7 +25,9 @@ public class VoteRepository {
     private final CrudVoteRepository crudVoteRepository;
     private final CrudRestaurantRepository crudRestaurantRepository;
     private final CrudUserRepository crudUserRepository;
-    private final Clock clock;
+    private Clock clock;
+
+    public static final LocalTime VOTING_CLOSED = LocalTime.of(23, 0);
 
     public VoteRepository(CrudVoteRepository crudVoteRepository,
                           CrudRestaurantRepository crudRestaurantRepository,
@@ -53,5 +56,13 @@ public class VoteRepository {
 
     public List<Vote> getAll(int restaurantId) {
         return crudVoteRepository.getAll(restaurantId);
+    }
+
+    public LocalTime now() {
+        return LocalDateTime.now(clock).toLocalTime();
+    }
+
+    public void setClock(Clock clock) {
+        this.clock = clock;
     }
 }

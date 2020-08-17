@@ -5,10 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.graduation.UserTestData;
+import ru.graduation.repository.vote.VoteRepository;
 import ru.graduation.util.exception.NotFoundException;
 
+import java.time.Clock;
 import java.util.List;
 
+import static java.time.ZoneId.systemDefault;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -16,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.graduation.RestaurantTestData.RATATOUILLE_ID;
 import static ru.graduation.TestUtil.userHttpBasic;
 import static ru.graduation.UserTestData.ADMIN;
+import static ru.graduation.UserTestData.USER;
 import static ru.graduation.VoteTestData.*;
 
 public class VoteControllerTest extends AbstractControllerTest {
@@ -23,6 +27,9 @@ public class VoteControllerTest extends AbstractControllerTest {
 
     @Autowired
     private VoteController controller;
+
+    @Autowired
+    private VoteRepository repository;
 
     @Test
     void get() throws Exception {
@@ -52,12 +59,28 @@ public class VoteControllerTest extends AbstractControllerTest {
 
     @Test
     void createWithLocation() throws Exception {
+        repository.setClock(
+                Clock.fixed(ALLOWED_VOTING_TIME.atZone(systemDefault()).toInstant(), systemDefault())
+        );
+
         perform(MockMvcRequestBuilders.post(REST_URL)
-                .with(userHttpBasic(ADMIN))
+                .with(userHttpBasic(USER))
                 .param("userId", String.valueOf(UserTestData.USER_ID))
-                .param("restaurantId", String.valueOf(RATATOUILLE_ID))
-                .contentType(MediaType.APPLICATION_JSON))
+                .param("restaurantId", String.valueOf(RATATOUILLE_ID)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void createWhenClosed() throws Exception {
+        repository.setClock(
+                Clock.fixed(TIME_AFTER_VOTING.atZone(systemDefault()).toInstant(), systemDefault())
+        );
+
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(USER))
+                .param("userId", String.valueOf(UserTestData.USER_ID))
+                .param("restaurantId", String.valueOf(RATATOUILLE_ID)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
