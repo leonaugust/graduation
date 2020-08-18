@@ -5,7 +5,7 @@ import ru.graduation.model.Vote;
 import java.time.LocalDateTime;
 import java.time.Month;
 
-import static java.time.LocalDateTime.of;
+import static java.time.LocalDate.of;
 import static ru.graduation.model.AbstractBaseEntity.START_SEQ;
 
 public class VoteTestData {
@@ -18,13 +18,13 @@ public class VoteTestData {
     public static final int VOTE3_ID = START_SEQ + 25;
     public static final int VOTE4_ID = START_SEQ + 26;
 
-    public static final Vote VOTE1 = new Vote(VOTE1_ID, of(2020, Month.AUGUST, 14, 16, 37));
-    public static final Vote VOTE2 = new Vote(VOTE2_ID, of(2020, Month.AUGUST, 14, 17, 20));
-    public static final Vote VOTE3 = new Vote(VOTE3_ID, of(2020, Month.AUGUST, 14, 17, 23));
-    public static final Vote VOTE4 = new Vote(VOTE4_ID, of(2020, Month.AUGUST, 14, 18, 56));
+    public static final Vote VOTE1 = new Vote(VOTE1_ID, of(2020, Month.AUGUST, 14));
+    public static final Vote VOTE2 = new Vote(VOTE2_ID, of(2020, Month.AUGUST, 14));
+    public static final Vote VOTE3 = new Vote(VOTE3_ID, of(2020, Month.AUGUST, 14));
+    public static final Vote VOTE4 = new Vote(VOTE4_ID, of(2020, Month.AUGUST, 14));
 
-    public static final LocalDateTime TIME_AFTER_VOTING = of(2020, Month.AUGUST, 15, 23, 30);
-    public static final LocalDateTime ALLOWED_VOTING_TIME = of(2020, Month.AUGUST, 12, 13, 12);
-    public static final LocalDateTime SIX_HOURS = of(2020, Month.AUGUST, 12, 18, 0);
-    public static final LocalDateTime SEVEN_HOURS = of(2020, Month.AUGUST, 12, 19, 0);
+    public static final LocalDateTime TIME_AFTER_VOTING = LocalDateTime.of(2020, Month.AUGUST, 15, 23, 30);
+    public static final LocalDateTime ALLOWED_VOTING_TIME = LocalDateTime.of(2020, Month.AUGUST, 12, 13, 12);
+    public static final LocalDateTime SIX_HOURS = LocalDateTime.of(2020, Month.AUGUST, 12, 18, 0);
+    public static final LocalDateTime SEVEN_HOURS = LocalDateTime.of(2020, Month.AUGUST, 12, 19, 0);
 }

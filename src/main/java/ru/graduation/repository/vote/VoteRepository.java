@@ -8,7 +8,7 @@ import ru.graduation.repository.restaurant.CrudRestaurantRepository;
 import ru.graduation.repository.user.CrudUserRepository;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class VoteRepository {
         }
 
         Vote vote = new Vote();
-        vote.setDateTime(LocalDateTime.now(clock));
+        vote.setDate(LocalDate.now(clock));
         vote.setRestaurant(crudRestaurantRepository.getOne(restaurantId));
         vote.setUser(crudUserRepository.getOne(userId));
         return crudVoteRepository.save(vote);
@@ -69,7 +69,7 @@ public class VoteRepository {
     }
 
     public LocalTime now() {
-        return LocalDateTime.now(clock).toLocalTime();
+        return LocalTime.now(clock);
     }
 
     public void setClock(Clock clock) {
