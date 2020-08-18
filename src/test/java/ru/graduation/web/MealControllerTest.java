@@ -1,5 +1,6 @@
 package ru.graduation.web;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -8,6 +9,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.graduation.model.Meal;
 import ru.graduation.util.exception.NotFoundException;
 import ru.graduation.web.json.JsonUtil;
+
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -77,6 +80,19 @@ public class MealControllerTest extends AbstractControllerTest {
         newMeal.setId(newId);
         MEAL_MATCHER.assertMatch(created, newMeal);
         MEAL_MATCHER.assertMatch(controller.get(newId), newMeal);
+    }
+
+    @Test
+    void createDateNotAssigned() throws Exception {
+        Meal meal = new Meal(null, "test", 21);
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(ADMIN))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(meal)))
+                .andExpect(status().isCreated());
+
+        Meal created = readFromJson(action, Meal.class);
+        Assertions.assertThat(created.getDate()).isEqualTo(LocalDate.now());
     }
 
     @Test
