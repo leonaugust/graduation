@@ -1,7 +1,5 @@
 package ru.graduation.repository.vote;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.graduation.model.Vote;
 import ru.graduation.repository.restaurant.CrudRestaurantRepository;
@@ -11,14 +9,6 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-
-@Component
-class AppClock {
-    @Bean
-    public Clock clock() {
-        return Clock.systemDefaultZone();
-    }
-}
 
 @Repository
 public class VoteRepository {
@@ -31,7 +21,8 @@ public class VoteRepository {
 
     public VoteRepository(CrudVoteRepository crudVoteRepository,
                           CrudRestaurantRepository crudRestaurantRepository,
-                          CrudUserRepository crudUserRepository, Clock clock) {
+                          CrudUserRepository crudUserRepository,
+                          Clock clock) {
         this.crudVoteRepository = crudVoteRepository;
         this.crudRestaurantRepository = crudRestaurantRepository;
         this.crudUserRepository = crudUserRepository;

@@ -18,7 +18,8 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 @Transactional
 @SpringJUnitWebConfig(locations = {
         "classpath:spring/spring-mvc.xml",
-        "classpath:spring/spring-db.xml"
+        "classpath:spring/spring-db.xml",
+        "classpath:spring/spring-app.xml",
 })
 public abstract class AbstractControllerTest {
     private static final CharacterEncodingFilter CHARACTER_ENCODING_FILTER = new CharacterEncodingFilter();
