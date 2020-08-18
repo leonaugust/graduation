@@ -68,6 +68,10 @@ public class VoteRepository {
         return crudVoteRepository.getAll(restaurantId);
     }
 
+    public List<Vote> findAllByDate(int restaurantId, LocalDate date) {
+        return crudVoteRepository.findAllByDate(restaurantId, date);
+    }
+
     public LocalTime now() {
         return LocalTime.now(clock);
     }

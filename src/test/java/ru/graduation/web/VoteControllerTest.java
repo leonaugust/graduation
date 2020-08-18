@@ -121,6 +121,17 @@ public class VoteControllerTest extends AbstractControllerTest {
                 .andExpect(VOTE_MATCHER.contentJson(List.of(VOTE1, VOTE2, VOTE4)));
     }
 
+    @Test
+    void findAllByDate() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "byDate")
+                .with(userHttpBasic(ADMIN))
+                .param("restaurantId", String.valueOf(PIZZA_PLANET_ID))
+                .param("date", "2020-08-14"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(VOTE_MATCHER.contentJson(List.of(VOTE3)));
+    }
+
     void useFixedClockAt(LocalDateTime dateTime) {
         repository.setClock(Clock.fixed(dateTime.atZone(systemDefault()).toInstant(), systemDefault()));
     }

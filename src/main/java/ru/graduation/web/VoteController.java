@@ -3,6 +3,7 @@ package ru.graduation.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import ru.graduation.model.Vote;
 import ru.graduation.repository.vote.VoteRepository;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 import static ru.graduation.util.ValidationUtil.checkNotFoundWithId;
@@ -27,10 +29,17 @@ public class VoteController {
 
     private final Logger logger = LoggerFactory.getLogger(VoteController.class);
 
-    @GetMapping()
+    @GetMapping
     public List<Vote> getAll(@RequestParam("restaurantId") int restaurantId) {
         logger.info("getAll votes");
         return repository.getAll(restaurantId);
+    }
+
+    @GetMapping("/byDate")
+    public List<Vote> findAllByDate(@RequestParam("restaurantId") int restaurantId,
+                                    @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        logger.info("findAll votes by date");
+        return repository.findAllByDate(restaurantId, date);
     }
 
     @GetMapping("/{id}")
