@@ -85,7 +85,7 @@ public class MealControllerTest extends AbstractControllerTest {
 
     @Test
     void createDateNotAssigned() throws Exception {
-        Meal meal = new Meal(null, "test", 21);
+        Meal meal = new Meal(null, "test", 210L);
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(ADMIN))
                 .contentType(MediaType.APPLICATION_JSON)

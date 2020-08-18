@@ -4,7 +4,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -19,9 +18,9 @@ public class Meal extends AbstractBaseEntity {
     @Size(min = 2, max = 120)
     private String name;
 
-    @Column(name = "price", nullable = false)
-    @DecimalMin("0.01")
-    private Double price;
+//    https://stackoverflow.com/questions/8148684/what-data-type-to-use-for-money-in-java/43051227#43051227
+@Column(name = "price", nullable = false)
+private Long price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
@@ -35,17 +34,17 @@ public class Meal extends AbstractBaseEntity {
     public Meal() {
     }
 
-    public Meal(String name, double price, LocalDate date) {
+    public Meal(String name, Long price, LocalDate date) {
         this(null, name, price, date);
     }
 
-    public Meal(Integer id, String name, double price) {
+    public Meal(Integer id, String name, Long price) {
         super(id);
         this.name = name;
         this.price = price;
     }
 
-    public Meal(Integer id, String name, double price, LocalDate date) {
+    public Meal(Integer id, String name, Long price, LocalDate date) {
         this(id, name, price);
         this.date = date;
     }
@@ -58,11 +57,11 @@ public class Meal extends AbstractBaseEntity {
         this.name = name;
     }
 
-    public double getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
@@ -72,10 +71,6 @@ public class Meal extends AbstractBaseEntity {
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
     }
 
     public LocalDate getDate() {
