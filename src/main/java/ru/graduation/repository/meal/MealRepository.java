@@ -35,4 +35,8 @@ public class MealRepository {
     public List<Meal> getAll(int restaurantId) {
         return crudRepository.getAll(restaurantId);
     }
+
+    public List<Meal> findAllByDate(int restaurantId, LocalDate date) {
+        return crudRepository.findAllByDate(restaurantId, date);
+    }
 }

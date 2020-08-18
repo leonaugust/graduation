@@ -3,6 +3,7 @@ package ru.graduation.web;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import ru.graduation.model.Meal;
 import ru.graduation.repository.meal.MealRepository;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 import static ru.graduation.util.ValidationUtil.*;
@@ -31,6 +33,13 @@ public class MealController {
     public List<Meal> getAll(@RequestParam int id) {
         logger.info("getAll meals");
         return repository.getAll(id);
+    }
+
+    @GetMapping("/byDate")
+    public List<Meal> findAllByDate(@RequestParam("restaurantId") int restaurantId,
+                                    @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        logger.info("findAll votes by date");
+        return repository.findAllByDate(restaurantId, date);
     }
 
     @GetMapping("/{id}")

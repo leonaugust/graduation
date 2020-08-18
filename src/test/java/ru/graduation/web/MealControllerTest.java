@@ -11,6 +11,7 @@ import ru.graduation.util.exception.NotFoundException;
 import ru.graduation.web.json.JsonUtil;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -103,5 +104,16 @@ public class MealControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MEAL_MATCHER.contentJson(MEALS));
+    }
+
+    @Test
+    void findAllByDate() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "byDate")
+                .with(userHttpBasic(ADMIN))
+                .param("restaurantId", String.valueOf(RATATOUILLE_ID))
+                .param("date", "2020-08-14"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_MATCHER.contentJson(List.of(MEAL2, MEAL3, MEAL4, MEAL5, MEAL1)));
     }
 }
