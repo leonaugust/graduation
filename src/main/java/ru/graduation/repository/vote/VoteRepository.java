@@ -5,11 +5,11 @@ import ru.graduation.model.Vote;
 import ru.graduation.repository.restaurant.CrudRestaurantRepository;
 import ru.graduation.repository.user.CrudUserRepository;
 
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import static ru.graduation.config.AppClock.getClock;
 import static ru.graduation.util.ValidationUtil.checkNotFoundWithId;
 
 @Repository
@@ -17,18 +17,15 @@ public class VoteRepository {
     private final CrudVoteRepository crudVoteRepository;
     private final CrudRestaurantRepository crudRestaurantRepository;
     private final CrudUserRepository crudUserRepository;
-    private Clock clock;
 
     public static final LocalTime VOTING_CLOSED = LocalTime.of(23, 0);
 
     public VoteRepository(CrudVoteRepository crudVoteRepository,
                           CrudRestaurantRepository crudRestaurantRepository,
-                          CrudUserRepository crudUserRepository,
-                          Clock clock) {
+                          CrudUserRepository crudUserRepository) {
         this.crudVoteRepository = crudVoteRepository;
         this.crudRestaurantRepository = crudRestaurantRepository;
         this.crudUserRepository = crudUserRepository;
-        this.clock = clock;
     }
 
     public Vote save(int userId, int restaurantId) {
@@ -39,7 +36,7 @@ public class VoteRepository {
         }
 
         Vote vote = new Vote();
-        vote.setDate(LocalDate.now(clock));
+        vote.setDate(LocalDate.now(getClock()));
         vote.setRestaurant(crudRestaurantRepository.getOne(restaurantId));
         vote.setUser(crudUserRepository.getOne(userId));
         return crudVoteRepository.save(vote);
@@ -65,13 +62,5 @@ public class VoteRepository {
 
     public List<Vote> findAllByDate(int restaurantId, LocalDate date) {
         return crudVoteRepository.findAllByDate(restaurantId, date);
-    }
-
-    public LocalTime now() {
-        return LocalTime.now(clock);
-    }
-
-    public void setClock(Clock clock) {
-        this.clock = clock;
     }
 }

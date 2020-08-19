@@ -17,6 +17,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
+import static ru.graduation.config.AppClock.now;
 import static ru.graduation.repository.vote.VoteRepository.VOTING_CLOSED;
 
 @RestController
@@ -53,7 +54,7 @@ public class VoteController {
                                                    @RequestParam("restaurantId") int restaurantId) {
         logger.info("create vote, userId: {}, restaurantId: {}", userId, restaurantId);
 
-        if (repository.now().isAfter(VOTING_CLOSED)) {
+        if (now().isAfter(VOTING_CLOSED)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Voting closed");
         }
 

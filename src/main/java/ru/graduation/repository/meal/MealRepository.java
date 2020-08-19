@@ -5,23 +5,20 @@ import org.springframework.util.Assert;
 import ru.graduation.model.Meal;
 import ru.graduation.repository.restaurant.CrudRestaurantRepository;
 
-import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 
+import static ru.graduation.config.AppClock.getClock;
 import static ru.graduation.util.ValidationUtil.*;
 
 @Repository
 public class MealRepository {
     private final CrudMealRepository crudMealRepository;
     private final CrudRestaurantRepository crudRestaurantRepository;
-    private final Clock clock;
 
     public MealRepository(CrudMealRepository crudRepository,
-                          Clock clock,
                           CrudRestaurantRepository crudRestaurantRepository) {
         this.crudMealRepository = crudRepository;
-        this.clock = clock;
         this.crudRestaurantRepository = crudRestaurantRepository;
     }
 
@@ -29,7 +26,7 @@ public class MealRepository {
         checkNew(meal);
         Assert.notNull(meal, "meal must not be null");
         if (meal.getDate() == null) {
-            meal.setDate(LocalDate.now(clock));
+            meal.setDate(LocalDate.now(getClock()));
         }
         meal.setRestaurant(crudRestaurantRepository.getOne(restaurantId));
         return crudMealRepository.save(meal);
@@ -39,7 +36,7 @@ public class MealRepository {
         assureIdConsistent(meal, id);
         Assert.notNull(meal, "meal must not be null");
         if (meal.getDate() == null) {
-            meal.setDate(LocalDate.now(clock));
+            meal.setDate(LocalDate.now(getClock()));
         }
         meal.setRestaurant(crudRestaurantRepository.getOne(restaurantId));
         checkNotFoundWithId(crudMealRepository.save(meal), meal.id());

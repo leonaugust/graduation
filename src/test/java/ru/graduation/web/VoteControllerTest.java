@@ -6,8 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.graduation.UserTestData;
+import ru.graduation.config.AppClock;
 import ru.graduation.model.Vote;
-import ru.graduation.repository.vote.VoteRepository;
 import ru.graduation.util.exception.NotFoundException;
 
 import java.time.Clock;
@@ -34,7 +34,7 @@ public class VoteControllerTest extends AbstractControllerTest {
     private VoteController controller;
 
     @Autowired
-    private VoteRepository repository;
+    private AppClock clock;
 
     @Test
     void get() throws Exception {
@@ -133,6 +133,6 @@ public class VoteControllerTest extends AbstractControllerTest {
     }
 
     void useFixedClockAt(LocalDateTime dateTime) {
-        repository.setClock(Clock.fixed(dateTime.atZone(systemDefault()).toInstant(), systemDefault()));
+        clock.setClock(Clock.fixed(dateTime.atZone(systemDefault()).toInstant(), systemDefault()));
     }
 }
