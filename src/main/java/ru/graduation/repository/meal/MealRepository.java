@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static ru.graduation.config.AppClock.getClock;
-import static ru.graduation.util.ValidationUtil.*;
+import static ru.graduation.util.ValidationUtil.checkNotFoundWithId;
 
 @Repository
 public class MealRepository {
@@ -23,7 +23,6 @@ public class MealRepository {
     }
 
     public Meal create(Meal meal, int restaurantId) {
-        checkNew(meal);
         Assert.notNull(meal, "meal must not be null");
         if (meal.getDate() == null) {
             meal.setDate(LocalDate.now(getClock()));
@@ -32,8 +31,7 @@ public class MealRepository {
         return crudMealRepository.save(meal);
     }
 
-    public void update(int id, Meal meal, int restaurantId) {
-        assureIdConsistent(meal, id);
+    public void update(Meal meal, int restaurantId) {
         Assert.notNull(meal, "meal must not be null");
         if (meal.getDate() == null) {
             meal.setDate(LocalDate.now(getClock()));

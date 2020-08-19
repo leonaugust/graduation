@@ -13,6 +13,9 @@ import ru.graduation.repository.user.UserRepository;
 import java.net.URI;
 import java.util.List;
 
+import static ru.graduation.util.ValidationUtil.assureIdConsistent;
+import static ru.graduation.util.ValidationUtil.checkNew;
+
 @RestController
 @RequestMapping(value = UserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
@@ -39,6 +42,7 @@ public class UserController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createWithLocation(@RequestBody User user) {
         logger.info("create user {}", user);
+        checkNew(user);
         User created = repository.create(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -50,7 +54,8 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@RequestBody User user, @PathVariable int id) {
         logger.info("update user {} id {}", user, id);
-        repository.update(user, id);
+        assureIdConsistent(user, id);
+        repository.update(user);
     }
 
     @DeleteMapping("/{id}")

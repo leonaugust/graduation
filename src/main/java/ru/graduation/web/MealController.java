@@ -16,6 +16,9 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
+import static ru.graduation.util.ValidationUtil.assureIdConsistent;
+import static ru.graduation.util.ValidationUtil.checkNew;
+
 @RestController
 @RequestMapping(value = MealController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MealController {
@@ -49,6 +52,7 @@ public class MealController {
     public ResponseEntity<Meal> createWithLocation(@RequestBody Meal meal,
                                                    @RequestParam("restaurantId") int restaurantId) {
         logger.info("create meal {}", meal);
+        checkNew(meal);
         Meal created = repository.create(meal, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -61,7 +65,8 @@ public class MealController {
     public void update(@RequestBody Meal meal, @PathVariable int id,
                        @RequestParam("restaurantId") int restaurantId) {
         logger.info("update meal {} id {}", meal, id);
-        repository.update(id, meal, restaurantId);
+        assureIdConsistent(meal, id);
+        repository.update(meal, restaurantId);
     }
 
     @DeleteMapping("/{id}")

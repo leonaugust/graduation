@@ -10,7 +10,7 @@ import ru.graduation.model.User;
 
 import java.util.List;
 
-import static ru.graduation.util.ValidationUtil.*;
+import static ru.graduation.util.ValidationUtil.checkNotFoundWithId;
 
 @Repository("userRepository")
 public class UserRepository implements UserDetailsService {
@@ -23,13 +23,11 @@ public class UserRepository implements UserDetailsService {
     }
 
     public User create(User user) {
-        checkNew(user);
         Assert.notNull(user, "user must not be null");
         return crudRepository.save(user);
     }
 
-    public void update(User user, int id) {
-        assureIdConsistent(user, id);
+    public void update(User user) {
         Assert.notNull(user, "user must not be null");
         checkNotFoundWithId(crudRepository.save(user), user.id());
     }

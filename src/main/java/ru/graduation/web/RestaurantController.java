@@ -14,6 +14,9 @@ import ru.graduation.repository.restaurant.RestaurantRepository;
 import java.net.URI;
 import java.util.List;
 
+import static ru.graduation.util.ValidationUtil.assureIdConsistent;
+import static ru.graduation.util.ValidationUtil.checkNew;
+
 @RestController
 @RequestMapping(value = RestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestaurantController {
@@ -40,6 +43,7 @@ public class RestaurantController {
     public ResponseEntity<Restaurant> createWithLocation(@RequestBody Restaurant r,
                                                          @RequestParam("userId") int userId) {
         logger.info("create restaurant {}", r);
+        checkNew(r);
         Restaurant created = repository.create(r, userId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -52,7 +56,8 @@ public class RestaurantController {
     public void update(@RequestBody Restaurant r, @PathVariable int id,
                        @RequestParam("userId") int userId) {
         logger.info("update restaurant {} id {}", r, id);
-        repository.update(id, r, userId);
+        assureIdConsistent(r, id);
+        repository.update(r, userId);
     }
 
     @DeleteMapping("/{id}")

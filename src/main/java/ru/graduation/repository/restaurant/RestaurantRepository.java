@@ -8,7 +8,7 @@ import ru.graduation.repository.user.CrudUserRepository;
 
 import java.util.List;
 
-import static ru.graduation.util.ValidationUtil.*;
+import static ru.graduation.util.ValidationUtil.checkNotFoundWithId;
 
 @Repository
 public class RestaurantRepository {
@@ -24,14 +24,12 @@ public class RestaurantRepository {
     }
 
     public Restaurant create(Restaurant r, int userId) {
-        checkNew(r);
         Assert.notNull(r, "restaurant must not be null");
         r.setUser(crudUserRepository.getOne(userId));
         return crudRestaurantRepository.save(r);
     }
 
-    public void update(int id, Restaurant r, int userId) {
-        assureIdConsistent(r, id);
+    public void update(Restaurant r, int userId) {
         Assert.notNull(r, "restaurant must not be null");
         r.setUser(crudUserRepository.getOne(userId));
         checkNotFoundWithId(crudRestaurantRepository.save(r), r.id());
