@@ -2,7 +2,6 @@ package ru.graduation.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,10 +24,13 @@ import static ru.graduation.repository.vote.VoteRepository.VOTING_CLOSED;
 public class VoteController {
     static final String REST_URL = "/rest/votes";
 
-    @Autowired
-    private VoteRepository repository;
+    private final VoteRepository repository;
 
     private final Logger logger = LoggerFactory.getLogger(VoteController.class);
+
+    public VoteController(VoteRepository repository) {
+        this.repository = repository;
+    }
 
     @GetMapping
     public List<Vote> getAll(@RequestParam("restaurantId") int restaurantId) {

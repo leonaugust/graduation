@@ -2,7 +2,6 @@ package ru.graduation.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,10 +23,13 @@ import static ru.graduation.util.ValidationUtil.checkNew;
 public class MealController {
     static final String REST_URL = "/rest/meals";
 
-    @Autowired
-    private MealRepository repository;
+    private final MealRepository repository;
 
     private final Logger logger = LoggerFactory.getLogger(MealController.class);
+
+    public MealController(MealRepository repository) {
+        this.repository = repository;
+    }
 
     @GetMapping()
     public List<Meal> getAll(@RequestParam int id) {
