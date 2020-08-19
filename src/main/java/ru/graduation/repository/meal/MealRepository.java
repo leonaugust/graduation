@@ -1,42 +1,65 @@
 package ru.graduation.repository.meal;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 import ru.graduation.model.Meal;
+import ru.graduation.repository.restaurant.CrudRestaurantRepository;
 
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 
+import static ru.graduation.util.ValidationUtil.*;
+
 @Repository
 public class MealRepository {
-    private final CrudMealRepository crudRepository;
+    private final CrudMealRepository crudMealRepository;
+    private final CrudRestaurantRepository crudRestaurantRepository;
     private final Clock clock;
 
-    public MealRepository(CrudMealRepository crudRepository, Clock clock) {
-        this.crudRepository = crudRepository;
+    public MealRepository(CrudMealRepository crudRepository,
+                          Clock clock,
+                          CrudRestaurantRepository crudRestaurantRepository) {
+        this.crudMealRepository = crudRepository;
         this.clock = clock;
+        this.crudRestaurantRepository = crudRestaurantRepository;
     }
 
-    public Meal save(Meal m) {
-        if (m.getDate() == null) {
-            m.setDate(LocalDate.now(clock));
+    public Meal create(Meal meal, int restaurantId) {
+        checkNew(meal);
+        Assert.notNull(meal, "meal must not be null");
+        if (meal.getDate() == null) {
+            meal.setDate(LocalDate.now(clock));
         }
-        return crudRepository.save(m);
+        meal.setRestaurant(crudRestaurantRepository.getOne(restaurantId));
+        return crudMealRepository.save(meal);
     }
 
-    public boolean delete(int id) {
-        return crudRepository.delete(id) != 0;
+    public void update(int id, Meal meal, int restaurantId) {
+        assureIdConsistent(meal, id);
+        Assert.notNull(meal, "meal must not be null");
+        if (meal.getDate() == null) {
+            meal.setDate(LocalDate.now(clock));
+        }
+        meal.setRestaurant(crudRestaurantRepository.getOne(restaurantId));
+        checkNotFoundWithId(crudMealRepository.save(meal), meal.id());
+    }
+
+    public void delete(int id) {
+        boolean found = crudMealRepository.delete(id) != 0;
+        checkNotFoundWithId(found, id);
     }
 
     public Meal get(int id) {
-        return crudRepository.findById(id).orElse(null);
+        Meal meal = crudMealRepository.findById(id).orElse(null);
+        return checkNotFoundWithId(meal, id);
     }
 
     public List<Meal> getAll(int restaurantId) {
-        return crudRepository.getAll(restaurantId);
+        return crudMealRepository.getAll(restaurantId);
     }
 
     public List<Meal> findAllByDate(int restaurantId, LocalDate date) {
-        return crudRepository.findAllByDate(restaurantId, date);
+        return crudMealRepository.findAllByDate(restaurantId, date);
     }
 }

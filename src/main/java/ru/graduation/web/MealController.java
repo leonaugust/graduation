@@ -7,7 +7,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.graduation.model.Meal;
@@ -16,8 +15,6 @@ import ru.graduation.repository.meal.MealRepository;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
-
-import static ru.graduation.util.ValidationUtil.*;
 
 @RestController
 @RequestMapping(value = MealController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -45,15 +42,14 @@ public class MealController {
     @GetMapping("/{id}")
     public Meal get(@PathVariable int id) {
         logger.info("get meal {}", id);
-        return checkNotFoundWithId(repository.get(id), id);
+        return repository.get(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Meal> createWithLocation(@RequestBody Meal m) {
-        logger.info("create meal {}", m);
-        checkNew(m);
-        Assert.notNull(m, "meal must not be null");
-        Meal created = repository.save(m);
+    public ResponseEntity<Meal> createWithLocation(@RequestBody Meal meal,
+                                                   @RequestParam("restaurantId") int restaurantId) {
+        logger.info("create meal {}", meal);
+        Meal created = repository.create(meal, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -62,11 +58,10 @@ public class MealController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Meal m, @PathVariable int id) {
-        logger.info("update meal {} id {}", m, id);
-        assureIdConsistent(m, id);
-        Assert.notNull(m, "meal must not be null");
-        checkNotFoundWithId(repository.save(m), m.id());
+    public void update(@RequestBody Meal meal, @PathVariable int id,
+                       @RequestParam("restaurantId") int restaurantId) {
+        logger.info("update meal {} id {}", meal, id);
+        repository.update(id, meal, restaurantId);
     }
 
     @DeleteMapping("/{id}")
@@ -74,6 +69,5 @@ public class MealController {
     public void delete(@PathVariable int id) {
         logger.info("delete meal {}", id);
         repository.delete(id);
-//        checkNotFoundWithId(repository.delete(id), id);
     }
 }

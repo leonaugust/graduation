@@ -17,7 +17,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
-import static ru.graduation.util.ValidationUtil.checkNotFoundWithId;
+import static ru.graduation.repository.vote.VoteRepository.VOTING_CLOSED;
 
 @RestController
 @RequestMapping(value = VoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -45,7 +45,7 @@ public class VoteController {
     @GetMapping("/{id}")
     public Vote get(@PathVariable int id) {
         logger.info("get vote {}", id);
-        return checkNotFoundWithId(repository.get(id), id);
+        return repository.get(id);
     }
 
     @PostMapping
@@ -53,7 +53,7 @@ public class VoteController {
                                                    @RequestParam("restaurantId") int restaurantId) {
         logger.info("create vote, userId: {}, restaurantId: {}", userId, restaurantId);
 
-        if (repository.now().isAfter(VoteRepository.VOTING_CLOSED)) {
+        if (repository.now().isAfter(VOTING_CLOSED)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Voting closed");
         }
 
@@ -69,6 +69,5 @@ public class VoteController {
     public void delete(@PathVariable int id) {
         logger.info("delete vote {}", id);
         repository.delete(id);
-//        checkNotFoundWithId(repository.delete(id), id);
     }
 }

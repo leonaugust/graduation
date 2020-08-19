@@ -10,6 +10,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import static ru.graduation.util.ValidationUtil.checkNotFoundWithId;
+
 @Repository
 public class VoteRepository {
     private final CrudVoteRepository crudVoteRepository;
@@ -43,12 +45,14 @@ public class VoteRepository {
         return crudVoteRepository.save(vote);
     }
 
-    public boolean delete(int id) {
-        return crudVoteRepository.delete(id) != 0;
+    public void delete(int id) {
+        boolean found = crudVoteRepository.delete(id) != 0;
+        checkNotFoundWithId(found, id);
     }
 
     public Vote get(int id) {
-        return crudVoteRepository.findById(id).orElse(null);
+        Vote vote = crudVoteRepository.findById(id).orElse(null);
+        return checkNotFoundWithId(vote, id);
     }
 
     public Vote findByUserId(int userId) {
