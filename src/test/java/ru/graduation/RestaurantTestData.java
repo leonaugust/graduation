@@ -8,7 +8,7 @@ import static ru.graduation.model.AbstractBaseEntity.START_SEQ;
 
 public class RestaurantTestData {
     public static TestMatcher<Restaurant> RESTAURANT_MATCHER =
-            TestMatcher.usingFieldsComparator(Restaurant.class, "menu");
+            TestMatcher.usingFieldsComparator(Restaurant.class, "menu", "user");
 
     public static final int NOT_FOUND = 10;
     public static final int RATATOUILLE_ID = START_SEQ + 5;

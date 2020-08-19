@@ -4,10 +4,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.Assert;
 import ru.graduation.AuthorizedUser;
 import ru.graduation.model.User;
 
 import java.util.List;
+
+import static ru.graduation.util.ValidationUtil.*;
 
 @Repository("userRepository")
 public class UserRepository implements UserDetailsService {
@@ -19,16 +22,26 @@ public class UserRepository implements UserDetailsService {
         this.crudRepository = crudRepository;
     }
 
-    public User save(User user) {
+    public User create(User user) {
+        checkNew(user);
+        Assert.notNull(user, "user must not be null");
         return crudRepository.save(user);
     }
 
-    public boolean delete(int id) {
-        return crudRepository.delete(id) != 0;
+    public void update(User user, int id) {
+        assureIdConsistent(user, id);
+        Assert.notNull(user, "user must not be null");
+        checkNotFoundWithId(crudRepository.save(user), user.id());
+    }
+
+    public void delete(int id) {
+        boolean found = crudRepository.delete(id) != 0;
+        checkNotFoundWithId(found, id);
     }
 
     public User get(int id) {
-        return crudRepository.findById(id).orElse(null);
+        User user = crudRepository.findById(id).orElse(null);
+        return checkNotFoundWithId(user, id);
     }
 
     public List<User> getAll() {

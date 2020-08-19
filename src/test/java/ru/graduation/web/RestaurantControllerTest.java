@@ -17,6 +17,7 @@ import static ru.graduation.RestaurantTestData.*;
 import static ru.graduation.TestUtil.readFromJson;
 import static ru.graduation.TestUtil.userHttpBasic;
 import static ru.graduation.UserTestData.ADMIN;
+import static ru.graduation.UserTestData.ADMIN_ID;
 
 public class RestaurantControllerTest extends AbstractControllerTest {
     private static final String REST_URL = RestaurantController.REST_URL + '/';
@@ -55,6 +56,7 @@ public class RestaurantControllerTest extends AbstractControllerTest {
         Restaurant updated = getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + KRUSTY_KRAB_ID)
                 .with(userHttpBasic(ADMIN))
+                .param("userId", String.valueOf(ADMIN_ID))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
@@ -67,6 +69,7 @@ public class RestaurantControllerTest extends AbstractControllerTest {
         Restaurant newRestaurant = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(ADMIN))
+                .param("userId", String.valueOf(ADMIN_ID))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newRestaurant)))
                 .andExpect(status().isCreated());
