@@ -1,5 +1,6 @@
 package ru.graduation.util;
 
+import ru.graduation.HasId;
 import ru.graduation.model.AbstractBaseEntity;
 import ru.graduation.util.exception.NotFoundException;
 
@@ -33,11 +34,11 @@ public class ValidationUtil {
         }
     }
 
-    public static void assureIdConsistent(AbstractBaseEntity entity, int id) {
-        if (entity.isNew()) {
-            entity.setId(id);
-        } else if (entity.id() != id) {
-            throw new IllegalArgumentException(entity + " must be with id=" + id);
+    public static void assureIdConsistent(HasId bean, int id) {
+        if (bean.isNew()) {
+            bean.setId(id);
+        } else if (bean.id() != id) {
+            throw new IllegalArgumentException(bean + " must be with id=" + id);
         }
     }
 }

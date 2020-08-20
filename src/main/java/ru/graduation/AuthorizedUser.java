@@ -3,6 +3,8 @@ package ru.graduation;
 import ru.graduation.model.User;
 import ru.graduation.to.UserTo;
 
+import static ru.graduation.util.UserUtil.asTo;
+
 public class AuthorizedUser extends org.springframework.security.core.userdetails.User {
     private static final long serialVersionUID = 1L;
 
@@ -12,10 +14,6 @@ public class AuthorizedUser extends org.springframework.security.core.userdetail
         super(user.getName(), user.getPassword(), true, true,
                 true, true, user.getRoles());
         this.userTo = asTo(user);
-    }
-
-    public static UserTo asTo(User user) {
-        return new UserTo(user.getId(), user.getName(), user.getLogin(), user.getPassword());
     }
 
     public int getId() {
