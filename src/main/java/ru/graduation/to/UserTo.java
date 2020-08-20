@@ -59,6 +59,8 @@ public class UserTo extends BaseTo implements HasId, Serializable {
     public String toString() {
         return "UserTo{" +
                 "name='" + name + '\'' +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
                 ", id=" + id +
                 '}';
     }

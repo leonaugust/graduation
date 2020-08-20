@@ -19,7 +19,7 @@ public class UserTestData {
     public static final User LILY = new User(LILY_ID, "lily", "aldrin", "password", Role.USER);
     public static final User TED = new User(TED_ID, "ted", "mosby", "password", Role.USER);
 
-    public static TestMatcher<User> USER_MATCHER = TestMatcher.usingFieldsComparator(User.class, "roles");
+    public static TestMatcher<User> USER_MATCHER = TestMatcher.usingFieldsWithIgnoringAssertions(User.class, "roles", "restaurants");
 
     public static User getNew() {
         return new User(null, "New", "new", "password", Collections.singleton(Role.USER));

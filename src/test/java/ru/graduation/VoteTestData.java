@@ -10,7 +10,7 @@ import static ru.graduation.model.AbstractBaseEntity.START_SEQ;
 
 public class VoteTestData {
     public static TestMatcher<Vote> VOTE_MATCHER =
-            TestMatcher.usingFieldsComparator(Vote.class, "restaurant", "user");
+            TestMatcher.usingFieldsWithIgnoringAssertions(Vote.class, "restaurant", "user");
 
     public static final int NOT_FOUND = 10;
     public static final int VOTE1_ID = START_SEQ + 23;
