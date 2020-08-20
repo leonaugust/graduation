@@ -23,6 +23,9 @@
                 </property>
             </bean>
         </mvc:message-converters>
+        <mvc:argument-resolvers>
+            <bean class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver "/>
+        </mvc:argument-resolvers>
     </mvc:annotation-driven>
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
