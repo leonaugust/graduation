@@ -5,8 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.graduation.AuthorizedUser;
 import ru.graduation.model.Restaurant;
 import ru.graduation.repository.restaurant.RestaurantRepository;
 
@@ -42,11 +45,11 @@ public class RestaurantController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Restaurant> createWithLocation(@RequestBody Restaurant r,
-                                                         @RequestParam("userId") int userId) {
+    public ResponseEntity<Restaurant> createWithLocation(@AuthenticationPrincipal AuthorizedUser authUser,
+                                                         @RequestBody Restaurant r) {
         logger.info("create restaurant {}", r);
         checkNew(r);
-        Restaurant created = repository.create(r, userId);
+        Restaurant created = repository.create(r, authUser.getId());
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -55,17 +58,28 @@ public class RestaurantController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Restaurant r, @PathVariable int id,
-                       @RequestParam("userId") int userId) {
+    public void update(@AuthenticationPrincipal AuthorizedUser authUser,
+                       @RequestBody Restaurant r,
+                       @PathVariable int id) {
         logger.info("update restaurant {} id {}", r, id);
+        int userId = authUser.getId();
+        checkOwner(id, userId);
         assureIdConsistent(r, id);
         repository.update(r, userId);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id) {
+    public void delete(@AuthenticationPrincipal AuthorizedUser authUser,
+                       @PathVariable int id) {
         logger.info("delete restaurant {}", id);
+        checkOwner(id, authUser.getId());
         repository.delete(id);
+    }
+
+    public void checkOwner(int restaurantId, int userId) {
+        if (repository.get(restaurantId).getUser().getId() != userId) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to do this");
+        }
     }
 }

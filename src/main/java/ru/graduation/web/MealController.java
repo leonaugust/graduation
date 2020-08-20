@@ -6,10 +6,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.graduation.AuthorizedUser;
 import ru.graduation.model.Meal;
 import ru.graduation.repository.meal.MealRepository;
+import ru.graduation.repository.restaurant.RestaurantRepository;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -24,17 +28,19 @@ public class MealController {
     static final String REST_URL = "/rest/meals";
 
     private final MealRepository repository;
+    private final RestaurantRepository restaurantRepository;
 
     private final Logger logger = LoggerFactory.getLogger(MealController.class);
 
-    public MealController(MealRepository repository) {
+    public MealController(MealRepository repository, RestaurantRepository restaurantRepository) {
         this.repository = repository;
+        this.restaurantRepository = restaurantRepository;
     }
 
     @GetMapping()
-    public List<Meal> getAll(@RequestParam int id) {
+    public List<Meal> getAll(@RequestParam("restaurantId") int restaurantId) {
         logger.info("getAll meals");
-        return repository.getAll(id);
+        return repository.getAll(restaurantId);
     }
 
     @GetMapping("/byDate")
@@ -51,9 +57,11 @@ public class MealController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Meal> createWithLocation(@RequestBody Meal meal,
+    public ResponseEntity<Meal> createWithLocation(@AuthenticationPrincipal AuthorizedUser authUser,
+                                                   @RequestBody Meal meal,
                                                    @RequestParam("restaurantId") int restaurantId) {
         logger.info("create meal {}", meal);
+        checkOwner(restaurantId, authUser.getId());
         checkNew(meal);
         Meal created = repository.create(meal, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -64,17 +72,28 @@ public class MealController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Meal meal, @PathVariable int id,
+    public void update(@AuthenticationPrincipal AuthorizedUser authUser,
+                       @RequestBody Meal meal, @PathVariable int id,
                        @RequestParam("restaurantId") int restaurantId) {
         logger.info("update meal {} id {}", meal, id);
+        checkOwner(restaurantId, authUser.getId());
         assureIdConsistent(meal, id);
         repository.update(meal, restaurantId);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id) {
+    public void delete(@AuthenticationPrincipal AuthorizedUser authUser,
+                       @PathVariable int id) {
         logger.info("delete meal {}", id);
+        int restaurantId = repository.get(id).getRestaurant().getId();
+        checkOwner(restaurantId, authUser.getId());
         repository.delete(id);
+    }
+
+    public void checkOwner(int restaurantId, int userId) {
+        if (restaurantRepository.get(restaurantId).getUser().getId() != userId) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to do this");
+        }
     }
 }

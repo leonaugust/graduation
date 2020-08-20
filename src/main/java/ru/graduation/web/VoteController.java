@@ -6,9 +6,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.graduation.AuthorizedUser;
 import ru.graduation.model.Vote;
 import ru.graduation.repository.vote.VoteRepository;
 
@@ -52,15 +54,14 @@ public class VoteController {
     }
 
     @PostMapping
-    public ResponseEntity<Vote> createWithLocation(@RequestParam("userId") int userId,
+    public ResponseEntity<Vote> createWithLocation(@AuthenticationPrincipal AuthorizedUser authUser,
                                                    @RequestParam("restaurantId") int restaurantId) {
-        logger.info("create vote, userId: {}, restaurantId: {}", userId, restaurantId);
-
+        logger.info("create vote, restaurantId: {}", restaurantId);
         if (now().isAfter(VOTING_CLOSED)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Voting closed");
         }
 
-        Vote created = repository.save(userId, restaurantId);
+        Vote created = repository.save(authUser.getId(), restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -69,8 +70,12 @@ public class VoteController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int id) {
+    public void delete(@AuthenticationPrincipal AuthorizedUser authUser,
+                       @PathVariable int id) {
         logger.info("delete vote {}", id);
+        if (repository.get(id).getUser().getId() != authUser.getId()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to do this");
+        }
         repository.delete(id);
     }
 }

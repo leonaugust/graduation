@@ -6,10 +6,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.graduation.model.Restaurant;
-import ru.graduation.util.exception.NotFoundException;
+import ru.graduation.repository.restaurant.RestaurantRepository;
 import ru.graduation.web.json.JsonUtil;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -17,13 +16,13 @@ import static ru.graduation.RestaurantTestData.*;
 import static ru.graduation.TestUtil.readFromJson;
 import static ru.graduation.TestUtil.userHttpBasic;
 import static ru.graduation.UserTestData.ADMIN;
-import static ru.graduation.UserTestData.ADMIN_ID;
+import static ru.graduation.UserTestData.BARNEY;
 
 public class RestaurantControllerTest extends AbstractControllerTest {
     private static final String REST_URL = RestaurantController.REST_URL + '/';
 
     @Autowired
-    private RestaurantController controller;
+    private RestaurantRepository repository;
 
     @Test
     void get() throws Exception {
@@ -48,7 +47,15 @@ public class RestaurantControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertThrows(NotFoundException.class, () -> controller.get(KRUSTY_KRAB_ID));
+        RESTAURANT_MATCHER.assertMatch(repository.getAll(), RATATOUILLE, PIZZA_PLANET);
+    }
+
+    @Test
+    void deleteNotOwn() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + KRUSTY_KRAB_ID)
+                .with(userHttpBasic(BARNEY)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -56,12 +63,21 @@ public class RestaurantControllerTest extends AbstractControllerTest {
         Restaurant updated = getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + KRUSTY_KRAB_ID)
                 .with(userHttpBasic(ADMIN))
-                .param("userId", String.valueOf(ADMIN_ID))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
-        RESTAURANT_MATCHER.assertMatch(controller.get(KRUSTY_KRAB_ID), updated);
+        RESTAURANT_MATCHER.assertMatch(repository.get(KRUSTY_KRAB_ID), updated);
+    }
+
+    @Test
+    void updateNotOwn() throws Exception {
+        Restaurant updated = getUpdated();
+        perform(MockMvcRequestBuilders.put(REST_URL + KRUSTY_KRAB_ID)
+                .with(userHttpBasic(BARNEY))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -69,7 +85,6 @@ public class RestaurantControllerTest extends AbstractControllerTest {
         Restaurant newRestaurant = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(ADMIN))
-                .param("userId", String.valueOf(ADMIN_ID))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newRestaurant)))
                 .andExpect(status().isCreated());
@@ -78,7 +93,7 @@ public class RestaurantControllerTest extends AbstractControllerTest {
         int newId = created.id();
         newRestaurant.setId(newId);
         RESTAURANT_MATCHER.assertMatch(created, newRestaurant);
-        RESTAURANT_MATCHER.assertMatch(controller.get(newId), newRestaurant);
+        RESTAURANT_MATCHER.assertMatch(repository.get(newId), newRestaurant);
     }
 
     @Test

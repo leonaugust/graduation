@@ -7,27 +7,28 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.graduation.model.Meal;
-import ru.graduation.util.exception.NotFoundException;
+import ru.graduation.repository.meal.MealRepository;
 import ru.graduation.web.json.JsonUtil;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.graduation.MealTestData.*;
+import static ru.graduation.RestaurantTestData.PIZZA_PLANET_ID;
 import static ru.graduation.RestaurantTestData.RATATOUILLE_ID;
 import static ru.graduation.TestUtil.readFromJson;
 import static ru.graduation.TestUtil.userHttpBasic;
 import static ru.graduation.UserTestData.ADMIN;
+import static ru.graduation.UserTestData.BARNEY;
 
 public class MealControllerTest extends AbstractControllerTest {
     private static final String REST_URL = MealController.REST_URL + '/';
 
     @Autowired
-    private MealController controller;
+    private MealRepository repository;
 
     @Test
     void get() throws Exception {
@@ -53,7 +54,15 @@ public class MealControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertThrows(NotFoundException.class, () -> controller.get(MEAL1_ID));
+        MEAL_MATCHER.assertMatch(repository.getAll(RATATOUILLE_ID), MEAL2, MEAL3, MEAL4, MEAL5);
+    }
+
+    @Test
+    void deleteNotOwner() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + MEAL1_ID)
+                .with(userHttpBasic(BARNEY)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -66,7 +75,18 @@ public class MealControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
-        MEAL_MATCHER.assertMatch(controller.get(MEAL1_ID), updated);
+        MEAL_MATCHER.assertMatch(repository.get(MEAL1_ID), updated);
+    }
+
+    @Test
+    void updateNotOwner() throws Exception {
+        Meal updated = getUpdated();
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
+                .with(userHttpBasic(ADMIN))
+                .param("restaurantId", String.valueOf(PIZZA_PLANET_ID))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -83,7 +103,7 @@ public class MealControllerTest extends AbstractControllerTest {
         int newId = created.id();
         newMeal.setId(newId);
         MEAL_MATCHER.assertMatch(created, newMeal);
-        MEAL_MATCHER.assertMatch(controller.get(newId), newMeal);
+        MEAL_MATCHER.assertMatch(repository.get(newId), newMeal);
     }
 
     @Test
@@ -101,9 +121,20 @@ public class MealControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void createNotOwner() throws Exception {
+        Meal newMeal = getNew();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(ADMIN))
+                .param("restaurantId", String.valueOf(PIZZA_PLANET_ID))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newMeal)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL)
-                .param("id", String.valueOf(RATATOUILLE_ID))
+                .param("restaurantId", String.valueOf(RATATOUILLE_ID))
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
