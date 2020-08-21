@@ -57,7 +57,7 @@ public class VoteControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(USER)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        VOTE_MATCHER.assertMatch(repository.getAll(RATATOUILLE_ID), VOTE2, VOTE4);
+        VOTE_MATCHER.assertMatch(repository.getAll(GUSTEAUS_ID), VOTE2, VOTE4);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class VoteControllerTest extends AbstractControllerTest {
 
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(USER))
-                .param("restaurantId", String.valueOf(RATATOUILLE_ID)))
+                .param("restaurantId", String.valueOf(GUSTEAUS_ID)))
                 .andExpect(status().isCreated());
     }
 
@@ -85,7 +85,7 @@ public class VoteControllerTest extends AbstractControllerTest {
 
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(USER))
-                .param("restaurantId", String.valueOf(RATATOUILLE_ID)))
+                .param("restaurantId", String.valueOf(GUSTEAUS_ID)))
                 .andExpect(status().isBadRequest());
     }
 
@@ -94,12 +94,12 @@ public class VoteControllerTest extends AbstractControllerTest {
         useFixedClockAt(SIX_HOURS);
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(USER))
-                .param("restaurantId", String.valueOf(RATATOUILLE_ID)))
+                .param("restaurantId", String.valueOf(GUSTEAUS_ID)))
                 .andExpect(status().isCreated());
         Vote created = readFromJson(action, Vote.class);
 
         assertThat(repository.get(created.getId()).getRestaurant().getName())
-                .isEqualTo(RATATOUILLE.getName());
+                .isEqualTo(GUSTEAUS.getName());
 
         useFixedClockAt(SEVEN_HOURS);
         action = perform(MockMvcRequestBuilders.post(REST_URL)
@@ -117,7 +117,7 @@ public class VoteControllerTest extends AbstractControllerTest {
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL)
                 .with(userHttpBasic(ADMIN))
-                .param("restaurantId", String.valueOf(RATATOUILLE_ID)))
+                .param("restaurantId", String.valueOf(GUSTEAUS_ID)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(VOTE_MATCHER.contentJson(List.of(VOTE1, VOTE2, VOTE4)));

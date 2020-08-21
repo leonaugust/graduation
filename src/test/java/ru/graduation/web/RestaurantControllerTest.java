@@ -47,7 +47,7 @@ public class RestaurantControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        RESTAURANT_MATCHER.assertMatch(repository.getAll(), RATATOUILLE, PIZZA_PLANET);
+        RESTAURANT_MATCHER.assertMatch(repository.getAll(), GUSTEAUS, PIZZA_PLANET);
     }
 
     @Test

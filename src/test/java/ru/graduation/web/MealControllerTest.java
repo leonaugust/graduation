@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import ru.graduation.MealTestData;
 import ru.graduation.model.Meal;
 import ru.graduation.repository.meal.MealRepository;
 import ru.graduation.web.json.JsonUtil;
@@ -17,8 +18,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.graduation.MealTestData.*;
+import static ru.graduation.RestaurantTestData.GUSTEAUS_ID;
 import static ru.graduation.RestaurantTestData.PIZZA_PLANET_ID;
-import static ru.graduation.RestaurantTestData.RATATOUILLE_ID;
 import static ru.graduation.TestUtil.readFromJson;
 import static ru.graduation.TestUtil.userHttpBasic;
 import static ru.graduation.UserTestData.ADMIN;
@@ -34,7 +35,7 @@ public class MealControllerTest extends AbstractControllerTest {
     void get() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID)
                 .with(userHttpBasic(ADMIN))
-                .param("restaurantId", String.valueOf(RATATOUILLE_ID)))
+                .param("restaurantId", String.valueOf(GUSTEAUS_ID)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 // https://jira.spring.io/browse/SPR-14472
@@ -54,7 +55,7 @@ public class MealControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        MEAL_MATCHER.assertMatch(repository.getAll(RATATOUILLE_ID), MEAL2, MEAL3, MEAL4, MEAL5);
+        MEAL_MATCHER.assertMatch(repository.getAll(GUSTEAUS_ID), MEAL2, MEAL3, MEAL4, MEAL5);
     }
 
     @Test
@@ -67,10 +68,10 @@ public class MealControllerTest extends AbstractControllerTest {
 
     @Test
     void update() throws Exception {
-        Meal updated = getUpdated();
+        Meal updated = MealTestData.getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
                 .with(userHttpBasic(ADMIN))
-                .param("restaurantId", String.valueOf(RATATOUILLE_ID))
+                .param("restaurantId", String.valueOf(GUSTEAUS_ID))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
@@ -80,7 +81,7 @@ public class MealControllerTest extends AbstractControllerTest {
 
     @Test
     void updateNotOwner() throws Exception {
-        Meal updated = getUpdated();
+        Meal updated = MealTestData.getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
                 .with(userHttpBasic(ADMIN))
                 .param("restaurantId", String.valueOf(PIZZA_PLANET_ID))
@@ -91,10 +92,10 @@ public class MealControllerTest extends AbstractControllerTest {
 
     @Test
     void createWithLocation() throws Exception {
-        Meal newMeal = getNew();
+        Meal newMeal = MealTestData.getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(ADMIN))
-                .param("restaurantId", String.valueOf(RATATOUILLE_ID))
+                .param("restaurantId", String.valueOf(GUSTEAUS_ID))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newMeal)))
                 .andExpect(status().isCreated());
@@ -111,7 +112,7 @@ public class MealControllerTest extends AbstractControllerTest {
         Meal meal = new Meal(null, "test", 210L);
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(ADMIN))
-                .param("restaurantId", String.valueOf(RATATOUILLE_ID))
+                .param("restaurantId", String.valueOf(GUSTEAUS_ID))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(meal)))
                 .andExpect(status().isCreated());
@@ -122,7 +123,7 @@ public class MealControllerTest extends AbstractControllerTest {
 
     @Test
     void createNotOwner() throws Exception {
-        Meal newMeal = getNew();
+        Meal newMeal = MealTestData.getNew();
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(ADMIN))
                 .param("restaurantId", String.valueOf(PIZZA_PLANET_ID))
@@ -134,7 +135,7 @@ public class MealControllerTest extends AbstractControllerTest {
     @Test
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL)
-                .param("restaurantId", String.valueOf(RATATOUILLE_ID))
+                .param("restaurantId", String.valueOf(GUSTEAUS_ID))
                 .with(userHttpBasic(ADMIN)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -145,7 +146,7 @@ public class MealControllerTest extends AbstractControllerTest {
     void findAllByDate() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + "byDate")
                 .with(userHttpBasic(ADMIN))
-                .param("restaurantId", String.valueOf(RATATOUILLE_ID))
+                .param("restaurantId", String.valueOf(GUSTEAUS_ID))
                 .param("date", "2020-08-14"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

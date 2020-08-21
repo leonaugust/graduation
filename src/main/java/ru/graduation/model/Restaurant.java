@@ -1,6 +1,8 @@
 package ru.graduation.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -8,22 +10,13 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
-@Table(name = "restaurants", uniqueConstraints = {@UniqueConstraint(columnNames = "address", name = "restaurants_unique_address_idx")})
+@Table(name = "restaurants", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "restaurants_unique_name_idx")})
 public class Restaurant extends AbstractBaseEntity {
 
     @Column(name = "name", nullable = false, unique = true)
     @NotBlank
     @Size(min = 5, max = 100)
     private String name;
-
-    @Column(name = "address", nullable = false)
-    @NotBlank
-    @Size(min = 5, max = 100)
-    private String address;
-
-    @Column(name = "website", nullable = false)
-    @Size(max = 130)
-    private String website;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OrderBy("name DESC")
@@ -32,24 +25,15 @@ public class Restaurant extends AbstractBaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     public Restaurant() {
     }
 
-    public Restaurant(Restaurant r) {
-        this(r.getId(), r.getName(), r.getAddress(), r.getWebsite());
-    }
-
-    public Restaurant(Integer id, String name, String address) {
-        super(id);
+    public Restaurant(Integer id, String name) {
+        this.id = id;
         this.name = name;
-        this.address = address;
-    }
-
-    public Restaurant(Integer id, String name, String address, String website) {
-        this(id, name, address);
-        this.website = website;
     }
 
     public String getName() {
@@ -58,22 +42,6 @@ public class Restaurant extends AbstractBaseEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
     }
 
     public List<Meal> getMenu() {
@@ -96,8 +64,8 @@ public class Restaurant extends AbstractBaseEntity {
     public String toString() {
         return "Restaurant{" +
                 "name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", website='" + website + '\'' +
+                ", menu=" + menu +
+                ", user=" + user +
                 ", id=" + id +
                 '}';
     }

@@ -1,5 +1,6 @@
 package ru.graduation.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -18,13 +19,15 @@ public class Meal extends AbstractBaseEntity {
     @Size(min = 2, max = 120)
     private String name;
 
-//    https://stackoverflow.com/questions/8148684/what-data-type-to-use-for-money-in-java/43051227#43051227
-@Column(name = "price", nullable = false)
-private Long price;
+    //    https://stackoverflow.com/questions/8148684/what-data-type-to-use-for-money-in-java/43051227#43051227
+    @Column(name = "price", nullable = false)
+    private Long price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @NotNull
+    @JsonBackReference
     private Restaurant restaurant;
 
     @Column(name = "date", nullable = false)
