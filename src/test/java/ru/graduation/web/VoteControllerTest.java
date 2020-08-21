@@ -18,12 +18,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.graduation.RestaurantTestData.*;
 import static ru.graduation.TestUtil.readFromJson;
 import static ru.graduation.TestUtil.userHttpBasic;
-import static ru.graduation.UserTestData.ADMIN;
-import static ru.graduation.UserTestData.USER;
-import static ru.graduation.VoteTestData.*;
+import static ru.graduation.testdata.RestaurantTestData.*;
+import static ru.graduation.testdata.UserTestData.ADMIN;
+import static ru.graduation.testdata.UserTestData.USER;
+import static ru.graduation.testdata.VoteTestData.*;
 
 public class VoteControllerTest extends AbstractControllerTest {
     private static final String REST_URL = VoteController.REST_URL + '/';

@@ -1,5 +1,6 @@
-package ru.graduation;
+package ru.graduation.testdata;
 
+import ru.graduation.TestMatcher;
 import ru.graduation.model.Restaurant;
 
 import java.util.List;

@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.graduation.MealTestData;
 import ru.graduation.model.Meal;
 import ru.graduation.repository.meal.MealRepository;
+import ru.graduation.testdata.MealTestData;
 import ru.graduation.web.json.JsonUtil;
 
 import java.time.LocalDate;
@@ -17,13 +17,13 @@ import java.util.List;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.graduation.MealTestData.*;
-import static ru.graduation.RestaurantTestData.GUSTEAUS_ID;
-import static ru.graduation.RestaurantTestData.PIZZA_PLANET_ID;
 import static ru.graduation.TestUtil.readFromJson;
 import static ru.graduation.TestUtil.userHttpBasic;
-import static ru.graduation.UserTestData.ADMIN;
-import static ru.graduation.UserTestData.BARNEY;
+import static ru.graduation.testdata.MealTestData.*;
+import static ru.graduation.testdata.RestaurantTestData.GUSTEAUS_ID;
+import static ru.graduation.testdata.RestaurantTestData.PIZZA_PLANET_ID;
+import static ru.graduation.testdata.UserTestData.ADMIN;
+import static ru.graduation.testdata.UserTestData.BARNEY;
 
 public class MealControllerTest extends AbstractControllerTest {
     private static final String REST_URL = MealController.REST_URL + '/';

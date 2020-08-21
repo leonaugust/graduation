@@ -1,5 +1,6 @@
-package ru.graduation;
+package ru.graduation.testdata;
 
+import ru.graduation.TestMatcher;
 import ru.graduation.model.Role;
 import ru.graduation.model.User;
 

@@ -12,11 +12,11 @@ import ru.graduation.web.json.JsonUtil;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.graduation.RestaurantTestData.*;
 import static ru.graduation.TestUtil.readFromJson;
 import static ru.graduation.TestUtil.userHttpBasic;
-import static ru.graduation.UserTestData.ADMIN;
-import static ru.graduation.UserTestData.BARNEY;
+import static ru.graduation.testdata.RestaurantTestData.*;
+import static ru.graduation.testdata.UserTestData.ADMIN;
+import static ru.graduation.testdata.UserTestData.BARNEY;
 
 public class RestaurantControllerTest extends AbstractControllerTest {
     private static final String REST_URL = RestaurantController.REST_URL + '/';

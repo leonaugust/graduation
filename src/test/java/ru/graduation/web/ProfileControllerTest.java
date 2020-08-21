@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.graduation.TestUtil.readFromJson;
 import static ru.graduation.TestUtil.userHttpBasic;
-import static ru.graduation.UserTestData.*;
+import static ru.graduation.testdata.UserTestData.*;
 import static ru.graduation.web.ProfileController.REST_URL;
 
 public class ProfileControllerTest extends AbstractControllerTest {
