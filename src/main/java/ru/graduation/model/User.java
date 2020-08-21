@@ -13,11 +13,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User extends AbstractBaseEntity {
-    @NotBlank
-    @Size(min = 2, max = 100)
-    @Column(name = "name", nullable = false)
-    protected String name;
+public class User extends AbstractNamedEntity {
 
     @Column(name = "login", nullable = false)
     @NotBlank
@@ -36,7 +32,7 @@ public class User extends AbstractBaseEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")//, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @JsonManagedReference
     private List<Restaurant> restaurants;
 
@@ -52,8 +48,7 @@ public class User extends AbstractBaseEntity {
     }
 
     public User(Integer id, String name, String login, String password, Collection<Role> roles) {
-        super(id);
-        this.name = name;
+        super(id, name);
         this.login = login;
         this.password = password;
         setRoles(roles);
@@ -81,14 +76,6 @@ public class User extends AbstractBaseEntity {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getLogin() {

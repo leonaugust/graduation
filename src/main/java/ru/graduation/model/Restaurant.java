@@ -5,18 +5,11 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
 @Table(name = "restaurants", uniqueConstraints = {@UniqueConstraint(columnNames = "name", name = "restaurants_unique_name_idx")})
-public class Restaurant extends AbstractBaseEntity {
-
-    @Column(name = "name", nullable = false, unique = true)
-    @NotBlank
-    @Size(min = 5, max = 100)
-    private String name;
+public class Restaurant extends AbstractNamedEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OrderBy("name DESC")
@@ -32,16 +25,7 @@ public class Restaurant extends AbstractBaseEntity {
     }
 
     public Restaurant(Integer id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        super(id, name);
     }
 
     public List<Meal> getMenu() {

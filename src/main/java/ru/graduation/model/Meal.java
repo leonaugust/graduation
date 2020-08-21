@@ -5,20 +5,12 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "meals")
-public class Meal extends AbstractBaseEntity {
-
-    @Column(name = "name", nullable = false)
-    @NotBlank
-    @Size(min = 2, max = 120)
-    private String name;
-
+public class Meal extends AbstractNamedEntity {
     //    https://stackoverflow.com/questions/8148684/what-data-type-to-use-for-money-in-java/43051227#43051227
     @Column(name = "price", nullable = false)
     private Long price;
@@ -42,22 +34,13 @@ public class Meal extends AbstractBaseEntity {
     }
 
     public Meal(Integer id, String name, Long price) {
-        super(id);
-        this.name = name;
+        super(id, name);
         this.price = price;
     }
 
     public Meal(Integer id, String name, Long price, LocalDate date) {
         this(id, name, price);
         this.date = date;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Long getPrice() {
