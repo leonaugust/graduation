@@ -18,7 +18,7 @@ public class VoteRepository {
     private final CrudRestaurantRepository crudRestaurantRepository;
     private final CrudUserRepository crudUserRepository;
 
-    public static final LocalTime VOTING_CLOSED = LocalTime.of(23, 0);
+    public static final LocalTime VOTING_CLOSED = LocalTime.of(11, 0);
 
     public VoteRepository(CrudVoteRepository crudVoteRepository,
                           CrudRestaurantRepository crudRestaurantRepository,

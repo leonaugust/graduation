@@ -10,8 +10,8 @@ cURL commands:
 #### get Meals by restaurant id 100005
 `curl http://localhost:8080/graduation/rest/meals?restaurantId=100005  --user user:password`
 
-#### create Vote
-`curl -s -X POST -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/graduation/rest/votes?restaurantId=100006 --user user:password`
+#### create Meal
+`curl -s -X POST -d '{"date":"2020-08-21","name":"Created lunch","price":300}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/graduation/rest/meals?restaurantId=100005 --user admin:password`
 
 #### register User
 `curl -s -i -X POST -d '{"name":"New User","login":"test-login","password":"test-password"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/graduation/rest/profile/register`

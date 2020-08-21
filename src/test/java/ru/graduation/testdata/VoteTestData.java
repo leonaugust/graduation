@@ -24,8 +24,6 @@ public class VoteTestData {
     public static final Vote VOTE3 = new Vote(VOTE3_ID, of(2020, Month.AUGUST, 14));
     public static final Vote VOTE4 = new Vote(VOTE4_ID, of(2020, Month.AUGUST, 14));
 
-    public static final LocalDateTime TIME_AFTER_VOTING = LocalDateTime.of(2020, Month.AUGUST, 15, 23, 30);
-    public static final LocalDateTime ALLOWED_VOTING_TIME = LocalDateTime.of(2020, Month.AUGUST, 12, 13, 12);
-    public static final LocalDateTime SIX_HOURS = LocalDateTime.of(2020, Month.AUGUST, 12, 18, 0);
-    public static final LocalDateTime SEVEN_HOURS = LocalDateTime.of(2020, Month.AUGUST, 12, 19, 0);
+    public static final LocalDateTime TIME_AFTER_VOTING = LocalDateTime.of(2020, Month.AUGUST, 15, 11, 5);
+    public static final LocalDateTime ALLOWED_VOTING_TIME = LocalDateTime.of(2020, Month.AUGUST, 12, 10, 12);
 }

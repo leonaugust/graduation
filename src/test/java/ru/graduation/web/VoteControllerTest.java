@@ -91,7 +91,7 @@ public class VoteControllerTest extends AbstractControllerTest {
 
     @Test
     void createChangedOpinion() throws Exception {
-        useFixedClockAt(SIX_HOURS);
+        useFixedClockAt(ALLOWED_VOTING_TIME);
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(USER))
                 .param("restaurantId", String.valueOf(GUSTEAUS_ID)))
@@ -101,7 +101,6 @@ public class VoteControllerTest extends AbstractControllerTest {
         assertThat(repository.get(created.getId()).getRestaurant().getName())
                 .isEqualTo(GUSTEAUS.getName());
 
-        useFixedClockAt(SEVEN_HOURS);
         action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(USER))
                 .param("restaurantId", String.valueOf(PIZZA_PLANET_ID)))
