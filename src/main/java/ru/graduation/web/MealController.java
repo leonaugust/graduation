@@ -27,33 +27,33 @@ import static ru.graduation.util.ValidationUtil.checkNew;
 public class MealController {
     static final String REST_URL = "/rest/meals";
 
-    private final MealRepository repository;
+    private final MealRepository mealRepository;
     private final RestaurantRepository restaurantRepository;
 
     private final Logger logger = LoggerFactory.getLogger(MealController.class);
 
-    public MealController(MealRepository repository, RestaurantRepository restaurantRepository) {
-        this.repository = repository;
+    public MealController(MealRepository mealRepository, RestaurantRepository restaurantRepository) {
+        this.mealRepository = mealRepository;
         this.restaurantRepository = restaurantRepository;
     }
 
     @GetMapping()
     public List<Meal> getAll(@RequestParam("restaurantId") int restaurantId) {
         logger.info("getAll meals");
-        return repository.getAll(restaurantId);
+        return mealRepository.getAll(restaurantId);
     }
 
     @GetMapping("/byDate")
     public List<Meal> findAllByDate(@RequestParam("restaurantId") int restaurantId,
                                     @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         logger.info("findAll votes by date");
-        return repository.findAllByDate(restaurantId, date);
+        return mealRepository.findAllByDate(restaurantId, date);
     }
 
     @GetMapping("/{id}")
     public Meal get(@PathVariable int id) {
         logger.info("get meal {}", id);
-        return repository.get(id);
+        return mealRepository.get(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -63,7 +63,7 @@ public class MealController {
         logger.info("create meal {}", meal);
         checkOwner(restaurantId, authUser.getId());
         checkNew(meal);
-        Meal created = repository.create(meal, restaurantId);
+        Meal created = mealRepository.create(meal, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -78,7 +78,7 @@ public class MealController {
         logger.info("update meal {} id {}", meal, id);
         checkOwner(restaurantId, authUser.getId());
         assureIdConsistent(meal, id);
-        repository.update(meal, restaurantId);
+        mealRepository.update(meal, restaurantId);
     }
 
     @DeleteMapping("/{id}")
@@ -86,12 +86,12 @@ public class MealController {
     public void delete(@AuthenticationPrincipal AuthorizedUser authUser,
                        @PathVariable int id) {
         logger.info("delete meal {}", id);
-        int restaurantId = repository.get(id).getRestaurant().getId();
+        int restaurantId = mealRepository.get(id).getRestaurant().getId();
         checkOwner(restaurantId, authUser.getId());
-        repository.delete(id);
+        mealRepository.delete(id);
     }
 
-    public void checkOwner(int restaurantId, int userId) {
+    private void checkOwner(int restaurantId, int userId) {
         if (restaurantRepository.get(restaurantId).getUser().getId() != userId) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to do this");
         }

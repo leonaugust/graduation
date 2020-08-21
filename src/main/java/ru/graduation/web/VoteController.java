@@ -70,8 +70,8 @@ public class VoteController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@AuthenticationPrincipal AuthorizedUser authUser,
-                       @PathVariable int id) {
+    private void delete(@AuthenticationPrincipal AuthorizedUser authUser,
+                        @PathVariable int id) {
         logger.info("delete vote {}", id);
         if (repository.get(id).getUser().getId() != authUser.getId()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to do this");

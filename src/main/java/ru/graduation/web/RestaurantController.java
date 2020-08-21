@@ -77,7 +77,7 @@ public class RestaurantController {
         repository.delete(id);
     }
 
-    public void checkOwner(int restaurantId, int userId) {
+    private void checkOwner(int restaurantId, int userId) {
         if (repository.get(restaurantId).getUser().getId() != userId) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to do this");
         }
