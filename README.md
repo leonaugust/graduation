@@ -4,25 +4,17 @@
 
 Restaurant voting system
 ===============================
-Design and implement a REST API using Hibernate/Spring/SpringMVC (or Spring-Boot) without frontend.
 
-The task is:
+cURL commands:
 
-Build a voting system for deciding where to have lunch.
+#### get Meals by restaurant id 100005
+`curl http://localhost:8080/graduation/rest/meals?restaurantId=100005  --user user:password`
 
-2 types of users: admin and regular users
-Admin can input a restaurant and it's lunch menu of the day (2-5 items usually, just a dish name and price)
-Menu changes each day (admins do the updates)
-Users can vote on which restaurant they want to have lunch at
-Only one vote counted per user
-If user votes again the same day:
-If it is before 11:00 we asume that he changed his mind.
-If it is after 11:00 then it is too late, vote can't be changed
-Each restaurant provides new menu each day.
+#### create Vote
+`curl -s -X POST -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/graduation/rest/votes?restaurantId=100006 --user user:password`
 
-As a result, provide a link to github repository. It should contain the code, README.md with API documentation and couple curl commands to test it.
-___
-P.S.: Make sure everything works with latest version that is on github :)
+#### register User
+`curl -s -i -X POST -d '{"name":"New User","login":"test-login","password":"test-password"}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/graduation/rest/profile/register`
 
-P.P.S.: Asume that your API will be used by a frontend developer to build frontend on top of that.
-___
+#### get Restaurant 100007
+`curl -s http://localhost:8080/graduation/rest/restaurants/100007 --user admin:password`
