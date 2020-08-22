@@ -36,6 +36,9 @@
                 <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SQL_COMMENTS}"
                        value="${hibernate.use_sql_comments}"/>
                 <entry key="#{T(org.hibernate.cfg.AvailableSettings).JPA_PROXY_COMPLIANCE}" value="false"/>
+
+                <entry key="javax.persistence.validation.group.pre-persist" value="ru.graduation.View$Persist"/>
+                <entry key="javax.persistence.validation.group.pre-update" value="ru.graduation.View$Persist"/>
             </map>
         </property>
 

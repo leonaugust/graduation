@@ -7,10 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.graduation.AuthorizedUser;
+import ru.graduation.View;
 import ru.graduation.model.Meal;
 import ru.graduation.repository.meal.MealRepository;
 import ru.graduation.repository.restaurant.RestaurantRepository;
@@ -58,7 +60,7 @@ public class MealController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Meal> createWithLocation(@AuthenticationPrincipal AuthorizedUser authUser,
-                                                   @RequestBody Meal meal,
+                                                   @Validated(View.Web.class) @RequestBody Meal meal,
                                                    @RequestParam("restaurantId") int restaurantId) {
         logger.info("create meal {}", meal);
         checkOwner(restaurantId, authUser.getId());
@@ -73,7 +75,7 @@ public class MealController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@AuthenticationPrincipal AuthorizedUser authUser,
-                       @RequestBody Meal meal, @PathVariable int id,
+                       @Validated(View.Web.class) @RequestBody Meal meal, @PathVariable int id,
                        @RequestParam("restaurantId") int restaurantId) {
         logger.info("update meal {} id {}", meal, id);
         checkOwner(restaurantId, authUser.getId());

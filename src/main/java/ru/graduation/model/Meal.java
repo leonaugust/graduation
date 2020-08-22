@@ -3,6 +3,7 @@ package ru.graduation.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import ru.graduation.View;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -18,12 +19,12 @@ public class Meal extends AbstractNamedEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @NotNull
     @JsonBackReference
+    @NotNull(groups = View.Persist.class)
     private Restaurant restaurant;
 
     @Column(name = "date", nullable = false)
-    @NotNull
+    @NotNull(groups = View.Persist.class)
     private LocalDate date;
 
     public Meal() {

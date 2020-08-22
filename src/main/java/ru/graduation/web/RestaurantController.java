@@ -6,10 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.graduation.AuthorizedUser;
+import ru.graduation.View;
 import ru.graduation.model.Restaurant;
 import ru.graduation.repository.restaurant.RestaurantRepository;
 
@@ -46,7 +48,7 @@ public class RestaurantController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> createWithLocation(@AuthenticationPrincipal AuthorizedUser authUser,
-                                                         @RequestBody Restaurant r) {
+                                                         @Validated(View.Web.class) @RequestBody Restaurant r) {
         logger.info("create restaurant {}", r);
         checkNew(r);
         Restaurant created = repository.create(r, authUser.getId());
@@ -59,7 +61,7 @@ public class RestaurantController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@AuthenticationPrincipal AuthorizedUser authUser,
-                       @RequestBody Restaurant r,
+                       @Validated(View.Web.class) @RequestBody Restaurant r,
                        @PathVariable int id) {
         logger.info("update restaurant {} id {}", r, id);
         int userId = authUser.getId();

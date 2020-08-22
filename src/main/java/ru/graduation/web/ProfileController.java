@@ -10,11 +10,13 @@ import ru.graduation.AuthorizedUser;
 import ru.graduation.model.User;
 import ru.graduation.repository.user.UserRepository;
 import ru.graduation.to.UserTo;
+import ru.graduation.util.UserUtil;
 
 import javax.validation.Valid;
 import java.net.URI;
 
 import static ru.graduation.util.ValidationUtil.assureIdConsistent;
+import static ru.graduation.util.ValidationUtil.checkNew;
 
 @RestController
 @RequestMapping(ProfileController.REST_URL)
@@ -40,6 +42,7 @@ public class ProfileController {
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
+        checkNew(UserUtil.createNewFromTo(userTo));
         User created = repository.create(userTo);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL).build().toUri();

@@ -1,5 +1,7 @@
 package ru.graduation.model;
 
+import ru.graduation.View;
+
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotBlank;
@@ -8,7 +10,7 @@ import javax.validation.constraints.Size;
 @MappedSuperclass
 public abstract class AbstractNamedEntity extends AbstractBaseEntity {
 
-    @NotBlank
+    @NotBlank(groups = View.Web.class)
     @Size(min = 2, max = 120)
     @Column(name = "name", nullable = false)
     protected String name;

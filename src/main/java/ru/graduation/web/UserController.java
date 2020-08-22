@@ -5,8 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.graduation.View;
 import ru.graduation.model.User;
 import ru.graduation.repository.user.UserRepository;
 
@@ -40,7 +42,7 @@ public class UserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createWithLocation(@RequestBody User user) {
+    public ResponseEntity<User> createWithLocation(@Validated(View.Web.class) @RequestBody User user) {
         logger.info("create user {}", user);
         checkNew(user);
         User created = repository.create(user);
@@ -52,7 +54,7 @@ public class UserController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody User user, @PathVariable int id) {
+    public void update(@Validated(View.Web.class) @RequestBody User user, @PathVariable int id) {
         logger.info("update user {} id {}", user, id);
         assureIdConsistent(user, id);
         repository.update(user);
