@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.graduation.model.User;
-import ru.graduation.util.exception.NotFoundException;
 import ru.graduation.web.json.JsonUtil;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -53,7 +52,7 @@ public class UserControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertThrows(NotFoundException.class, () -> controller.get(USER_ID));
+        assertThrows(NullPointerException.class, () -> controller.get(USER_ID));
     }
 
     @Test

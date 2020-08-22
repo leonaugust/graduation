@@ -52,7 +52,7 @@ public class UserRepository implements UserDetailsService {
     }
 
     public User get(int id) {
-        User user = crudRepository.findById(id).orElse(null);
+        User user = crudRepository.findById(id).orElseThrow(null);
         return checkNotFoundWithId(user, id);
     }
 

@@ -46,7 +46,7 @@ public class MealRepository {
     }
 
     public Meal get(int id) {
-        Meal meal = crudMealRepository.findById(id).orElse(null);
+        Meal meal = crudMealRepository.findById(id).orElseThrow(null);
         return checkNotFoundWithId(meal, id);
     }
 

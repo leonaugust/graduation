@@ -48,7 +48,7 @@ public class VoteRepository {
     }
 
     public Vote get(int id) {
-        Vote vote = crudVoteRepository.findById(id).orElse(null);
+        Vote vote = crudVoteRepository.findById(id).orElseThrow(null);
         return checkNotFoundWithId(vote, id);
     }
 

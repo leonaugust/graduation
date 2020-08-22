@@ -41,7 +41,7 @@ public class RestaurantRepository {
     }
 
     public Restaurant get(int id) {
-        Restaurant restaurant = crudRestaurantRepository.findById(id).orElse(null);
+        Restaurant restaurant = crudRestaurantRepository.findById(id).orElseThrow(null);
         return checkNotFoundWithId(restaurant, id);
     }
 
