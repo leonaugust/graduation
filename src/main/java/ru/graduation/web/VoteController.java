@@ -58,7 +58,7 @@ public class VoteController {
                                                    @RequestParam("restaurantId") int restaurantId) {
         logger.info("create vote, restaurantId: {}", restaurantId);
         if (now().isAfter(VOTING_CLOSED)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Voting closed");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Voting closed");
         }
 
         Vote created = repository.save(authUser.getId(), restaurantId);
@@ -68,13 +68,14 @@ public class VoteController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
+    // Even admins aren't allowed to delete votes
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     private void delete(@AuthenticationPrincipal AuthorizedUser authUser,
                         @PathVariable int id) {
         logger.info("delete vote {}", id);
         if (repository.get(id).getUser().getId() != authUser.getId()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to do this");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the owner of the vote is allowed to do it");
         }
         repository.delete(id);
     }

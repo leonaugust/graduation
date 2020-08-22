@@ -81,7 +81,7 @@ public class RestaurantController {
 
     private void checkOwner(int restaurantId, int userId) {
         if (repository.get(restaurantId).getUser().getId() != userId) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not allowed to do this");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the owner of the restaurant is allowed to make this operation");
         }
     }
 }

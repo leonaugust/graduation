@@ -65,10 +65,9 @@ public class VoteControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.delete(REST_URL + VOTE1_ID)
                 .with(userHttpBasic(ADMIN)))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
     }
 
-    //    https://stackoverflow.com/questions/24491260/mocking-time-in-java-8s-java-time-api
     @Test
     void createWithLocation() throws Exception {
         useFixedClockAt(ALLOWED_VOTING_TIME);
@@ -86,7 +85,7 @@ public class VoteControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(USER))
                 .param("restaurantId", String.valueOf(GUSTEAUS_ID)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
     }
 
     @Test

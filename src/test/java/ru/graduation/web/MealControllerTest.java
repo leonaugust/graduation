@@ -63,7 +63,7 @@ public class MealControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.delete(REST_URL + MEAL1_ID)
                 .with(userHttpBasic(BARNEY)))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -87,7 +87,7 @@ public class MealControllerTest extends AbstractControllerTest {
                 .param("restaurantId", String.valueOf(PIZZA_PLANET_ID))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -129,7 +129,7 @@ public class MealControllerTest extends AbstractControllerTest {
                 .param("restaurantId", String.valueOf(PIZZA_PLANET_ID))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newMeal)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isForbidden());
     }
 
     @Test
