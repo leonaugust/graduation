@@ -7,8 +7,10 @@ Restaurant voting system
 
 **Description**
 
-A voting system for deciding where to have lunch. Every day, admins of the restaurants update their menu.
-From the start of the day to the end of voting, users can choose which restaurant they like the most.
+    A voting system for deciding where to have lunch.
+    Every day, admins of the restaurants update their menu.
+    From the start of the day to the end of voting,
+    users can choose which restaurant they like the most.
 
 ------------------------------
 
@@ -44,21 +46,16 @@ From the start of the day to the end of voting, users can choose which restauran
 
 **Installation**
 
-mvn clean package
-
-mvn cargo:run
+    mvn clean package
+    mvn cargo:run
     
 ------------------------------
 
 **Authorization**
 
-User(
-name: user, login: user, password: password
-)
+User(name: user, login: user, password: password)
 
-Admin(
-name: admin, login: admin, password: password
-)
+Admin(name: admin, login: admin, password: password)
 
 
  
