@@ -44,7 +44,9 @@ cURL commands:
 
 Installation
 
-...
+mvn clean package
+
+mvn cargo:run
     
 ------------------------------
 
