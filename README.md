@@ -5,14 +5,14 @@
 Restaurant voting system
 ===============================
 
-Description
+**Description**
 
 A voting system for deciding where to have lunch. Every day, admins of the restaurants update their menu.
 From the start of the day to the end of voting, users can choose which restaurant they like the most.
 
 ------------------------------
 
-Implementation Stack:
+**Implementation Stack:**
 
 • Spring MVC
 
@@ -26,7 +26,7 @@ Implementation Stack:
 
 ------------------------------
 
-cURL commands:
+**cURL commands:**
 
 #### get Meals by restaurant id 100005
 `curl http://localhost:8080/graduation/rest/meals?restaurantId=100005  --user user:password`
@@ -42,7 +42,7 @@ cURL commands:
 
 ------------------------------
 
-Installation
+**Installation**
 
 mvn clean package
 
@@ -50,7 +50,7 @@ mvn cargo:run
     
 ------------------------------
 
-Authorization
+**Authorization**
 
 User(
 name: user, login: user, password: password
