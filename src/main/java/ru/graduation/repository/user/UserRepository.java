@@ -1,5 +1,7 @@
 package ru.graduation.repository.user;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,11 +22,14 @@ public class UserRepository implements UserDetailsService {
 
     private final CrudUserRepository crudRepository;
 
+    private final Logger logger = LoggerFactory.getLogger(UserRepository.class);
+
     public UserRepository(CrudUserRepository crudRepository) {
         this.crudRepository = crudRepository;
     }
 
     public User create(User user) {
+        logger.info("create user {}", user.getId());
         Assert.notNull(user, "user must not be null");
         return crudRepository.save(user);
     }
@@ -35,11 +40,13 @@ public class UserRepository implements UserDetailsService {
     }
 
     public void update(User user) {
+        logger.info("update user {}", user.getId());
         Assert.notNull(user, "user must not be null");
         checkNotFoundWithId(crudRepository.save(user), user.id());
     }
 
     public void update(UserTo userTo) {
+        logger.info("update user");
         User user = get(userTo.id());
         UserUtil.updateFromTo(user, userTo);
         Assert.notNull(user, "user must not be null");
@@ -47,20 +54,24 @@ public class UserRepository implements UserDetailsService {
     }
 
     public void delete(int id) {
+        logger.info("delete user {}", id);
         boolean found = crudRepository.delete(id) != 0;
         checkNotFoundWithId(found, id);
     }
 
     public User get(int id) {
+        logger.info("get user {}", id);
         User user = crudRepository.findById(id).orElseThrow(null);
         return checkNotFoundWithId(user, id);
     }
 
     public List<User> getAll() {
+        logger.info("getAll users");
         return crudRepository.findAll(SORT_NAME);
     }
 
     public AuthorizedUser loadUserByUsername(String name) throws UsernameNotFoundException {
+        logger.info("load user by name {}", name);
         User user = crudRepository.getByName(name.toLowerCase());
         if (user == null) {
             throw new UsernameNotFoundException("User " + name + " is not found");

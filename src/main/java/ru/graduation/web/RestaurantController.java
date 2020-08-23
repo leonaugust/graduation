@@ -1,7 +1,5 @@
 package ru.graduation.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,28 +26,23 @@ public class RestaurantController {
 
     private final RestaurantRepository repository;
 
-    private final Logger logger = LoggerFactory.getLogger(RestaurantController.class);
-
     public RestaurantController(RestaurantRepository repository) {
         this.repository = repository;
     }
 
     @GetMapping
     public List<Restaurant> getAll() {
-        logger.info("getAll restaurants");
         return repository.getAll();
     }
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
-        logger.info("get restaurant {}", id);
         return repository.get(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> createWithLocation(@AuthenticationPrincipal AuthorizedUser authUser,
                                                          @Validated(View.Web.class) @RequestBody Restaurant r) {
-        logger.info("create restaurant {}", r);
         checkNew(r);
         Restaurant created = repository.create(r, authUser.getId());
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -63,7 +56,6 @@ public class RestaurantController {
     public void update(@AuthenticationPrincipal AuthorizedUser authUser,
                        @Validated(View.Web.class) @RequestBody Restaurant r,
                        @PathVariable int id) {
-        logger.info("update restaurant {} id {}", r, id);
         int userId = authUser.getId();
         checkOwner(id, userId);
         assureIdConsistent(r, id);
@@ -74,7 +66,6 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthorizedUser authUser,
                        @PathVariable int id) {
-        logger.info("delete restaurant {}", id);
         checkOwner(id, authUser.getId());
         repository.delete(id);
     }

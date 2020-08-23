@@ -1,5 +1,7 @@
 package ru.graduation.repository.vote;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.graduation.model.Vote;
 import ru.graduation.repository.restaurant.CrudRestaurantRepository;
@@ -18,6 +20,8 @@ public class VoteRepository {
     private final CrudRestaurantRepository crudRestaurantRepository;
     private final CrudUserRepository crudUserRepository;
 
+    private final Logger logger = LoggerFactory.getLogger(VoteRepository.class);
+
     public static final LocalTime VOTING_CLOSED = LocalTime.of(11, 0);
 
     public VoteRepository(CrudVoteRepository crudVoteRepository,
@@ -29,6 +33,7 @@ public class VoteRepository {
     }
 
     public Vote save(int userId, int restaurantId) {
+        logger.info("save vote, userId {}, restaurantId {}", userId, restaurantId);
         Vote existing = findByUserId(userId);
         if (existing != null) {
             existing.setRestaurant(crudRestaurantRepository.getOne(restaurantId));
@@ -43,24 +48,29 @@ public class VoteRepository {
     }
 
     public void delete(int id) {
+        logger.info("delete vote {}", id);
         boolean found = crudVoteRepository.delete(id) != 0;
         checkNotFoundWithId(found, id);
     }
 
     public Vote get(int id) {
+        logger.info("get vote {}", id);
         Vote vote = crudVoteRepository.findById(id).orElseThrow(null);
         return checkNotFoundWithId(vote, id);
     }
 
     public Vote findByUserId(int userId) {
+        logger.info("find vote, userId {}", userId);
         return crudVoteRepository.findByUserId(userId).orElse(null);
     }
 
     public List<Vote> getAll(int restaurantId) {
+        logger.info("getAll votes, restaurantId {}", restaurantId);
         return crudVoteRepository.getAll(restaurantId);
     }
 
     public List<Vote> findAllByDate(int restaurantId, LocalDate date) {
+        logger.info("findAll votes by date, restaurantId {}, date {}", restaurantId, date);
         return crudVoteRepository.findAllByDate(restaurantId, date);
     }
 }

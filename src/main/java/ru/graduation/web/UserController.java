@@ -1,7 +1,5 @@
 package ru.graduation.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +21,6 @@ import static ru.graduation.util.ValidationUtil.checkNew;
 public class UserController {
     static final String REST_URL = "/rest/admin/users";
     private final UserRepository repository;
-    private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public UserController(UserRepository repository) {
         this.repository = repository;
@@ -31,19 +28,16 @@ public class UserController {
 
     @GetMapping
     public List<User> getAll() {
-        logger.info("getAll users");
         return repository.getAll();
     }
 
     @GetMapping("/{id}")
     public User get(@PathVariable int id) {
-        logger.info("get user {}", id);
         return repository.get(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createWithLocation(@Validated(View.Web.class) @RequestBody User user) {
-        logger.info("create user {}", user);
         checkNew(user);
         User created = repository.create(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -55,7 +49,6 @@ public class UserController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@Validated(View.Web.class) @RequestBody User user, @PathVariable int id) {
-        logger.info("update user {} id {}", user, id);
         assureIdConsistent(user, id);
         repository.update(user);
     }
@@ -63,7 +56,6 @@ public class UserController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
-        logger.info("delete user {}", id);
         repository.delete(id);
     }
 }

@@ -1,7 +1,5 @@
 package ru.graduation.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,8 +30,6 @@ public class MealController {
     private final MealRepository mealRepository;
     private final RestaurantRepository restaurantRepository;
 
-    private final Logger logger = LoggerFactory.getLogger(MealController.class);
-
     public MealController(MealRepository mealRepository, RestaurantRepository restaurantRepository) {
         this.mealRepository = mealRepository;
         this.restaurantRepository = restaurantRepository;
@@ -41,20 +37,17 @@ public class MealController {
 
     @GetMapping()
     public List<Meal> getAll(@RequestParam("restaurantId") int restaurantId) {
-        logger.info("getAll meals");
         return mealRepository.getAll(restaurantId);
     }
 
     @GetMapping("/byDate")
     public List<Meal> findAllByDate(@RequestParam("restaurantId") int restaurantId,
                                     @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        logger.info("findAll votes by date");
         return mealRepository.findAllByDate(restaurantId, date);
     }
 
     @GetMapping("/{id}")
     public Meal get(@PathVariable int id) {
-        logger.info("get meal {}", id);
         return mealRepository.get(id);
     }
 
@@ -62,7 +55,6 @@ public class MealController {
     public ResponseEntity<Meal> createWithLocation(@AuthenticationPrincipal AuthorizedUser authUser,
                                                    @Validated(View.Web.class) @RequestBody Meal meal,
                                                    @RequestParam("restaurantId") int restaurantId) {
-        logger.info("create meal {}", meal);
         checkOwner(restaurantId, authUser.getId());
         checkNew(meal);
         Meal created = mealRepository.create(meal, restaurantId);
@@ -77,7 +69,6 @@ public class MealController {
     public void update(@AuthenticationPrincipal AuthorizedUser authUser,
                        @Validated(View.Web.class) @RequestBody Meal meal, @PathVariable int id,
                        @RequestParam("restaurantId") int restaurantId) {
-        logger.info("update meal {} id {}", meal, id);
         checkOwner(restaurantId, authUser.getId());
         assureIdConsistent(meal, id);
         mealRepository.update(meal, restaurantId);
@@ -87,7 +78,6 @@ public class MealController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthorizedUser authUser,
                        @PathVariable int id) {
-        logger.info("delete meal {}", id);
         int restaurantId = mealRepository.get(id).getRestaurant().getId();
         checkOwner(restaurantId, authUser.getId());
         mealRepository.delete(id);

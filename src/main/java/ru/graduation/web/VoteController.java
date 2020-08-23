@@ -1,7 +1,5 @@
 package ru.graduation.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,35 +26,29 @@ public class VoteController {
 
     private final VoteRepository repository;
 
-    private final Logger logger = LoggerFactory.getLogger(VoteController.class);
-
     public VoteController(VoteRepository repository) {
         this.repository = repository;
     }
 
     @GetMapping
     public List<Vote> getAll(@RequestParam("restaurantId") int restaurantId) {
-        logger.info("getAll votes");
         return repository.getAll(restaurantId);
     }
 
     @GetMapping("/byDate")
     public List<Vote> findAllByDate(@RequestParam("restaurantId") int restaurantId,
                                     @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        logger.info("findAll votes by date");
         return repository.findAllByDate(restaurantId, date);
     }
 
     @GetMapping("/{id}")
     public Vote get(@PathVariable int id) {
-        logger.info("get vote {}", id);
         return repository.get(id);
     }
 
     @PostMapping
     public ResponseEntity<Vote> createWithLocation(@AuthenticationPrincipal AuthorizedUser authUser,
                                                    @RequestParam("restaurantId") int restaurantId) {
-        logger.info("create vote, restaurantId: {}", restaurantId);
         if (now().isAfter(VOTING_CLOSED)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Voting closed");
         }
@@ -73,7 +65,6 @@ public class VoteController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     private void delete(@AuthenticationPrincipal AuthorizedUser authUser,
                         @PathVariable int id) {
-        logger.info("delete vote {}", id);
         if (repository.get(id).getUser().getId() != authUser.getId()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the owner of the vote is allowed to do it");
         }
