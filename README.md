@@ -201,6 +201,7 @@ Delete User
 --------------  
 
 URL: /rest/profile
+
 Notes: The user can only apply actions to himself
 
 Get User
@@ -586,9 +587,6 @@ Delete Restaurant
         Code: 500 Internal Server Error or 403 Forbidden
         
 --------------
-+++++++++++++
-
---------------  
 
 URL: /rest/votes
 
