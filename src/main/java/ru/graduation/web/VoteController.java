@@ -60,7 +60,7 @@ public class VoteController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-    // Even admins aren't allowed to delete votes
+    // Even admins aren't allowed to delete votes of others
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     private void delete(@AuthenticationPrincipal AuthorizedUser authUser,
