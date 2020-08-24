@@ -20,10 +20,6 @@
     <authentication-manager>
         <authentication-provider user-service-ref="userRepository">
             <password-encoder ref="noopEncoder"/>
-            <!--            <user-service>-->
-            <!--                <user name="user" password="password" authorities="ROLE_USER"/>-->
-            <!--                <user name="admin" password="password" authorities="ROLE_ADMIN"/>-->
-            <!--            </user-service>-->
         </authentication-provider>
     </authentication-manager>
 </beans:beans>

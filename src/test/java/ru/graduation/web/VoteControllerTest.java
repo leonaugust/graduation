@@ -132,7 +132,7 @@ public class VoteControllerTest extends AbstractControllerTest {
                 .andExpect(VOTE_MATCHER.contentJson(List.of(VOTE3)));
     }
 
-    void useFixedClockAt(LocalDateTime dateTime) {
+    private void useFixedClockAt(LocalDateTime dateTime) {
         clock.setClock(Clock.fixed(dateTime.atZone(systemDefault()).toInstant(), systemDefault()));
     }
 }

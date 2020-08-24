@@ -30,7 +30,7 @@ Restaurant voting system
 
 **cURL commands:**
 
-#### get Meals by restaurant id 100005
+#### get Meals 100005
 `curl http://localhost:8080/graduation/rest/meals?restaurantId=100005  --user user:password`
 
 #### create Meal
@@ -45,7 +45,9 @@ Restaurant voting system
 ------------------------------
 
 **Installation**
-
+    
+    https://github.com/leonaugust/graduation.git
+    
     mvn clean package
     mvn cargo:run
     
