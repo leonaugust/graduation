@@ -64,6 +64,8 @@ public class UserControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
+        int id = controller.get(USER_ID).getId();
+        updated.setId(id);
         USER_MATCHER.assertMatch(controller.get(USER_ID), updated);
     }
 

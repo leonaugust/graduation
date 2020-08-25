@@ -27,7 +27,7 @@ public class UserTestData {
     }
 
     public static User getUpdated() {
-        User updated = new User(USER);
+        User updated = new User();
         updated.setName("UpdatedName");
         updated.setLogin("UpdatedLogin");
         updated.setPassword("UpdatedPassword");

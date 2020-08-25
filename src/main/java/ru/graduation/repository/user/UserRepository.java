@@ -70,11 +70,11 @@ public class UserRepository implements UserDetailsService {
         return crudRepository.findAll(SORT_NAME);
     }
 
-    public AuthorizedUser loadUserByUsername(String name) throws UsernameNotFoundException {
-        logger.info("load user by name {}", name);
-        User user = crudRepository.getByName(name.toLowerCase());
+    public AuthorizedUser loadUserByUsername(String login) throws UsernameNotFoundException {
+        logger.info("load user by user name {}", login);
+        User user = crudRepository.getByLogin(login.toLowerCase());
         if (user == null) {
-            throw new UsernameNotFoundException("User " + name + " is not found");
+            throw new UsernameNotFoundException("User " + login + " is not found");
         }
         return new AuthorizedUser(user);
     }

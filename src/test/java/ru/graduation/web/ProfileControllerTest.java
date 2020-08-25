@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.graduation.TestUtil.readFromJson;
 import static ru.graduation.TestUtil.userHttpBasic;
 import static ru.graduation.testdata.UserTestData.*;
+import static ru.graduation.util.UserUtil.asTo;
 import static ru.graduation.web.ProfileController.REST_URL;
 
 public class ProfileControllerTest extends AbstractControllerTest {
@@ -48,7 +49,7 @@ public class ProfileControllerTest extends AbstractControllerTest {
 
     @Test
     void register() throws Exception {
-        UserTo newTo = new UserTo(null, "newName", "newLogin", "newPassword");
+        UserTo newTo = asTo(getNew());
         User newUser = UserUtil.createNewFromTo(newTo);
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -65,7 +66,7 @@ public class ProfileControllerTest extends AbstractControllerTest {
 
     @Test
     void update() throws Exception {
-        UserTo updatedTo = new UserTo(null, "newName", "newLogin", "newPassword");
+        UserTo updatedTo = asTo(getUpdated());
         perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(USER))
                 .content(JsonUtil.writeValue(updatedTo)))
