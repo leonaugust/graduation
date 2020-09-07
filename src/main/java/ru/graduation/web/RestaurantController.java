@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.graduation.AuthorizedUser;
 import ru.graduation.View;
@@ -44,7 +43,7 @@ public class RestaurantController {
     public ResponseEntity<Restaurant> createWithLocation(@AuthenticationPrincipal AuthorizedUser authUser,
                                                          @Validated(View.Web.class) @RequestBody Restaurant r) {
         checkNew(r);
-        Restaurant created = repository.create(r, authUser.getId());
+        Restaurant created = repository.create(r);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -56,23 +55,14 @@ public class RestaurantController {
     public void update(@AuthenticationPrincipal AuthorizedUser authUser,
                        @Validated(View.Web.class) @RequestBody Restaurant r,
                        @PathVariable int id) {
-        int userId = authUser.getId();
-        checkOwner(id, userId);
         assureIdConsistent(r, id);
-        repository.update(r, userId);
+        repository.update(r);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthorizedUser authUser,
                        @PathVariable int id) {
-        checkOwner(id, authUser.getId());
         repository.delete(id);
-    }
-
-    private void checkOwner(int restaurantId, int userId) {
-        if (repository.get(restaurantId).getUser().getId() != userId) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the owner of the restaurant is allowed to make this operation");
-        }
     }
 }

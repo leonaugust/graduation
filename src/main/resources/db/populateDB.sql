@@ -25,10 +25,10 @@ VALUES ('USER', 100000),
        ('USER', 100003),
        ('USER', 100004);
 
-INSERT INTO restaurants (name, user_id)
-VALUES ('Gusteau''s', 100001),
-       ('Pizza Planet', 100002),
-       ('The Krusty Krab ', 100001);
+INSERT INTO restaurants (name)
+VALUES ('Gusteau''s'),
+       ('Pizza Planet'),
+       ('The Krusty Krab ');
 
 INSERT INTO meals (name, price, date, restaurant_id)
 VALUES ('Ratatouille', 250, '2020-08-14', 100005),

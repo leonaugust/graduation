@@ -18,9 +18,7 @@ import static ru.graduation.TestUtil.readFromJson;
 import static ru.graduation.TestUtil.userHttpBasic;
 import static ru.graduation.testdata.MealTestData.MEAL1_ID;
 import static ru.graduation.testdata.RestaurantTestData.GUSTEAUS_ID;
-import static ru.graduation.testdata.RestaurantTestData.PIZZA_PLANET_ID;
 import static ru.graduation.testdata.UserTestData.ADMIN;
-import static ru.graduation.testdata.UserTestData.BARNEY;
 
 public class MealControllerTest extends AbstractControllerTest {
     private static final String REST_URL = MealController.REST_URL + '/';
@@ -48,14 +46,6 @@ public class MealControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void deleteNotOwner() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + MEAL1_ID)
-                .with(userHttpBasic(BARNEY)))
-                .andDo(print())
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
     void update() throws Exception {
         Meal updated = MealTestData.getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
@@ -64,17 +54,6 @@ public class MealControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
-    }
-
-    @Test
-    void updateNotOwner() throws Exception {
-        Meal updated = MealTestData.getUpdated();
-        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
-                .with(userHttpBasic(ADMIN))
-                .param("restaurantId", String.valueOf(PIZZA_PLANET_ID))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updated)))
-                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -100,17 +79,6 @@ public class MealControllerTest extends AbstractControllerTest {
 
         Meal created = readFromJson(action, Meal.class);
         Assertions.assertThat(created.getDate()).isEqualTo(LocalDate.now());
-    }
-
-    @Test
-    void createNotOwner() throws Exception {
-        Meal newMeal = MealTestData.getNew();
-        perform(MockMvcRequestBuilders.post(REST_URL)
-                .with(userHttpBasic(ADMIN))
-                .param("restaurantId", String.valueOf(PIZZA_PLANET_ID))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(newMeal)))
-                .andExpect(status().isForbidden());
     }
 
     @Test

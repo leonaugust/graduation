@@ -7,13 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.graduation.AuthorizedUser;
 import ru.graduation.View;
 import ru.graduation.model.Meal;
 import ru.graduation.repository.meal.MealRepository;
-import ru.graduation.repository.restaurant.RestaurantRepository;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -28,11 +26,9 @@ public class MealController {
     static final String REST_URL = "/rest/meals";
 
     private final MealRepository mealRepository;
-    private final RestaurantRepository restaurantRepository;
 
-    public MealController(MealRepository mealRepository, RestaurantRepository restaurantRepository) {
+    public MealController(MealRepository mealRepository) {
         this.mealRepository = mealRepository;
-        this.restaurantRepository = restaurantRepository;
     }
 
     @GetMapping()
@@ -55,7 +51,6 @@ public class MealController {
     public ResponseEntity<Meal> createWithLocation(@AuthenticationPrincipal AuthorizedUser authUser,
                                                    @Validated(View.Web.class) @RequestBody Meal meal,
                                                    @RequestParam("restaurantId") int restaurantId) {
-        checkOwner(restaurantId, authUser.getId());
         checkNew(meal);
         Meal created = mealRepository.create(meal, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -69,7 +64,6 @@ public class MealController {
     public void update(@AuthenticationPrincipal AuthorizedUser authUser,
                        @Validated(View.Web.class) @RequestBody Meal meal, @PathVariable int id,
                        @RequestParam("restaurantId") int restaurantId) {
-        checkOwner(restaurantId, authUser.getId());
         assureIdConsistent(meal, id);
         mealRepository.update(meal, restaurantId);
     }
@@ -78,14 +72,6 @@ public class MealController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthorizedUser authUser,
                        @PathVariable int id) {
-        int restaurantId = mealRepository.get(id).getRestaurant().getId();
-        checkOwner(restaurantId, authUser.getId());
         mealRepository.delete(id);
-    }
-
-    private void checkOwner(int restaurantId, int userId) {
-        if (restaurantRepository.get(restaurantId).getUser().getId() != userId) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the owner of the restaurant is allowed to make this operation");
-        }
     }
 }

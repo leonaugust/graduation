@@ -6,7 +6,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 import ru.graduation.model.Restaurant;
-import ru.graduation.repository.user.CrudUserRepository;
 
 import java.util.List;
 
@@ -17,27 +16,22 @@ public class RestaurantRepository {
     private static final Sort SORT_NAME = Sort.by(Sort.Direction.ASC, "name");
 
     private final CrudRestaurantRepository crudRestaurantRepository;
-    private final CrudUserRepository crudUserRepository;
 
     private final Logger logger = LoggerFactory.getLogger(RestaurantRepository.class);
 
-    public RestaurantRepository(CrudRestaurantRepository crudRestaurantRepository,
-                                CrudUserRepository crudUserRepository) {
+    public RestaurantRepository(CrudRestaurantRepository crudRestaurantRepository) {
         this.crudRestaurantRepository = crudRestaurantRepository;
-        this.crudUserRepository = crudUserRepository;
     }
 
-    public Restaurant create(Restaurant r, int userId) {
+    public Restaurant create(Restaurant r) {
         logger.info("create restaurant {}", r.getId());
         Assert.notNull(r, "restaurant must not be null");
-        r.setUser(crudUserRepository.getOne(userId));
         return crudRestaurantRepository.save(r);
     }
 
-    public void update(Restaurant r, int userId) {
+    public void update(Restaurant r) {
         logger.info("update restaurant {}", r.getId());
         Assert.notNull(r, "restaurant must not be null");
-        r.setUser(crudUserRepository.getOne(userId));
         checkNotFoundWithId(crudRestaurantRepository.save(r), r.id());
     }
 

@@ -12,7 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.graduation.TestUtil.userHttpBasic;
 import static ru.graduation.testdata.RestaurantTestData.*;
 import static ru.graduation.testdata.UserTestData.ADMIN;
-import static ru.graduation.testdata.UserTestData.BARNEY;
 
 public class RestaurantControllerTest extends AbstractControllerTest {
     private static final String REST_URL = RestaurantController.REST_URL + '/';
@@ -42,14 +41,6 @@ public class RestaurantControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void deleteNotOwn() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + KRUSTY_KRAB_ID)
-                .with(userHttpBasic(BARNEY)))
-                .andDo(print())
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
     void update() throws Exception {
         Restaurant updated = getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + KRUSTY_KRAB_ID)
@@ -57,16 +48,6 @@ public class RestaurantControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
-    }
-
-    @Test
-    void updateNotOwn() throws Exception {
-        Restaurant updated = getUpdated();
-        perform(MockMvcRequestBuilders.put(REST_URL + KRUSTY_KRAB_ID)
-                .with(userHttpBasic(BARNEY))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updated)))
-                .andExpect(status().isForbidden());
     }
 
     @Test
