@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.graduation.model.Meal;
-import ru.graduation.testdata.MealTestData;
+import ru.graduation.model.Dish;
+import ru.graduation.testdata.DishTestData;
 import ru.graduation.web.json.JsonUtil;
 
 import java.time.LocalDate;
@@ -16,16 +16,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.graduation.TestUtil.readFromJson;
 import static ru.graduation.TestUtil.userHttpBasic;
-import static ru.graduation.testdata.MealTestData.MEAL1_ID;
+import static ru.graduation.testdata.DishTestData.DISH1_ID;
 import static ru.graduation.testdata.RestaurantTestData.GUSTEAUS_ID;
 import static ru.graduation.testdata.UserTestData.ADMIN;
 
-public class MealControllerTest extends AbstractControllerTest {
-    private static final String REST_URL = MealController.REST_URL + '/';
+public class DishControllerTest extends AbstractControllerTest {
+    private static final String REST_URL = DishController.REST_URL + '/';
 
     @Test
     void get() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID)
+        perform(MockMvcRequestBuilders.get(REST_URL + DISH1_ID)
                 .with(userHttpBasic(ADMIN))
                 .param("restaurantId", String.valueOf(GUSTEAUS_ID)))
                 .andExpect(status().isOk());
@@ -33,13 +33,13 @@ public class MealControllerTest extends AbstractControllerTest {
 
     @Test
     void getUnAuth() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID))
+        perform(MockMvcRequestBuilders.get(REST_URL + DISH1_ID))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + MEAL1_ID)
+        perform(MockMvcRequestBuilders.delete(REST_URL + DISH1_ID)
                 .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
@@ -47,8 +47,8 @@ public class MealControllerTest extends AbstractControllerTest {
 
     @Test
     void update() throws Exception {
-        Meal updated = MealTestData.getUpdated();
-        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID)
+        Dish updated = DishTestData.getUpdated();
+        perform(MockMvcRequestBuilders.put(REST_URL + DISH1_ID)
                 .with(userHttpBasic(ADMIN))
                 .param("restaurantId", String.valueOf(GUSTEAUS_ID))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -58,26 +58,26 @@ public class MealControllerTest extends AbstractControllerTest {
 
     @Test
     void createWithLocation() throws Exception {
-        Meal newMeal = MealTestData.getNew();
+        Dish newDish = DishTestData.getNew();
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(ADMIN))
                 .param("restaurantId", String.valueOf(GUSTEAUS_ID))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(newMeal)))
+                .content(JsonUtil.writeValue(newDish)))
                 .andExpect(status().isCreated());
     }
 
     @Test
     void createDateNotAssigned() throws Exception {
-        Meal meal = new Meal(null, "test", 210L);
+        Dish dish = new Dish(null, "test", 210L);
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(ADMIN))
                 .param("restaurantId", String.valueOf(GUSTEAUS_ID))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(meal)))
+                .content(JsonUtil.writeValue(dish)))
                 .andExpect(status().isCreated());
 
-        Meal created = readFromJson(action, Meal.class);
+        Dish created = readFromJson(action, Dish.class);
         Assertions.assertThat(created.getDate()).isEqualTo(LocalDate.now());
     }
 

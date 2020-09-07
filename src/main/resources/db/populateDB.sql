@@ -1,5 +1,5 @@
 DELETE
-FROM meal;
+FROM dish;
 DELETE
 FROM vote;
 DELETE
@@ -30,7 +30,7 @@ VALUES ('Gusteau''s'),
        ('Pizza Planet'),
        ('The Krusty Krab ');
 
-INSERT INTO meal (name, price, date, restaurant_id)
+INSERT INTO dish (name, price, date, restaurant_id)
 VALUES ('Ratatouille', 250, '2020-08-14', 100005),
        ('Buffalo Wings', 300, '2020-08-14', 100005),
        ('Charbroiled Oysters', 270, '2020-08-14', 100005),

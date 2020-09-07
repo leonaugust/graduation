@@ -10,9 +10,9 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "meal", uniqueConstraints =
-@UniqueConstraint(columnNames = {"restaurant_id", "date", "name"}, name = "meal_unique_restaurant_date_name_idx"))
-public class Meal extends AbstractNamedEntity {
+@Table(name = "dish", uniqueConstraints =
+@UniqueConstraint(columnNames = {"restaurant_id", "date", "name"}, name = "dish_unique_restaurant_date_name_idx"))
+public class Dish extends AbstractNamedEntity {
     //    https://stackoverflow.com/questions/8148684/what-data-type-to-use-for-money-in-java/43051227#43051227
     @Column(name = "price", nullable = false)
     private Long price;
@@ -28,19 +28,19 @@ public class Meal extends AbstractNamedEntity {
     @NotNull(groups = View.Persist.class)
     private LocalDate date;
 
-    public Meal() {
+    public Dish() {
     }
 
-    public Meal(String name, Long price, LocalDate date) {
+    public Dish(String name, Long price, LocalDate date) {
         this(null, name, price, date);
     }
 
-    public Meal(Integer id, String name, Long price) {
+    public Dish(Integer id, String name, Long price) {
         super(id, name);
         this.price = price;
     }
 
-    public Meal(Integer id, String name, Long price, LocalDate date) {
+    public Dish(Integer id, String name, Long price, LocalDate date) {
         this(id, name, price);
         this.date = date;
     }
@@ -71,7 +71,7 @@ public class Meal extends AbstractNamedEntity {
 
     @Override
     public String toString() {
-        return "Meal{" +
+        return "Dish{" +
                 "name='" + name + '\'' +
                 ", price=" + price +
                 ", id=" + id +

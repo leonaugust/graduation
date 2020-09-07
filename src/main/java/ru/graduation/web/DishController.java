@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.graduation.AuthorizedUser;
 import ru.graduation.View;
-import ru.graduation.model.Meal;
-import ru.graduation.repository.meal.MealRepository;
+import ru.graduation.model.Dish;
+import ru.graduation.repository.dish.DishRepository;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -21,38 +21,38 @@ import static ru.graduation.util.ValidationUtil.assureIdConsistent;
 import static ru.graduation.util.ValidationUtil.checkNew;
 
 @RestController
-@RequestMapping(value = MealController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-public class MealController {
-    static final String REST_URL = "/rest/meals";
+@RequestMapping(value = DishController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+public class DishController {
+    static final String REST_URL = "/rest/dishes";
 
-    private final MealRepository mealRepository;
+    private final DishRepository dishRepository;
 
-    public MealController(MealRepository mealRepository) {
-        this.mealRepository = mealRepository;
+    public DishController(DishRepository dishRepository) {
+        this.dishRepository = dishRepository;
     }
 
     @GetMapping()
-    public List<Meal> getAll(@RequestParam("restaurantId") int restaurantId) {
-        return mealRepository.getAll(restaurantId);
+    public List<Dish> getAll(@RequestParam("restaurantId") int restaurantId) {
+        return dishRepository.getAll(restaurantId);
     }
 
     @GetMapping("/byDate")
-    public List<Meal> findAllByDate(@RequestParam("restaurantId") int restaurantId,
+    public List<Dish> findAllByDate(@RequestParam("restaurantId") int restaurantId,
                                     @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return mealRepository.findAllByDate(restaurantId, date);
+        return dishRepository.findAllByDate(restaurantId, date);
     }
 
     @GetMapping("/{id}")
-    public Meal get(@PathVariable int id) {
-        return mealRepository.get(id);
+    public Dish get(@PathVariable int id) {
+        return dishRepository.get(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Meal> createWithLocation(@AuthenticationPrincipal AuthorizedUser authUser,
-                                                   @Validated(View.Web.class) @RequestBody Meal meal,
+    public ResponseEntity<Dish> createWithLocation(@AuthenticationPrincipal AuthorizedUser authUser,
+                                                   @Validated(View.Web.class) @RequestBody Dish dish,
                                                    @RequestParam("restaurantId") int restaurantId) {
-        checkNew(meal);
-        Meal created = mealRepository.create(meal, restaurantId);
+        checkNew(dish);
+        Dish created = dishRepository.create(dish, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -62,16 +62,16 @@ public class MealController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@AuthenticationPrincipal AuthorizedUser authUser,
-                       @Validated(View.Web.class) @RequestBody Meal meal, @PathVariable int id,
+                       @Validated(View.Web.class) @RequestBody Dish dish, @PathVariable int id,
                        @RequestParam("restaurantId") int restaurantId) {
-        assureIdConsistent(meal, id);
-        mealRepository.update(meal, restaurantId);
+        assureIdConsistent(dish, id);
+        dishRepository.update(dish, restaurantId);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthorizedUser authUser,
                        @PathVariable int id) {
-        mealRepository.delete(id);
+        dishRepository.delete(id);
     }
 }

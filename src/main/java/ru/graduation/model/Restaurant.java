@@ -9,7 +9,7 @@ public class Restaurant extends AbstractNamedEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OrderBy("name DESC")
-    private List<Meal> menu;
+    private List<Dish> menu;
 
     public Restaurant() {
     }
@@ -18,11 +18,11 @@ public class Restaurant extends AbstractNamedEntity {
         super(id, name);
     }
 
-    public List<Meal> getMenu() {
+    public List<Dish> getMenu() {
         return menu;
     }
 
-    public void setMenu(List<Meal> menu) {
+    public void setMenu(List<Dish> menu) {
         this.menu = menu;
     }
 
