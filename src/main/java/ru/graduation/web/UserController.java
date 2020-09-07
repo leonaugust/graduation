@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.graduation.View;
 import ru.graduation.model.User;
-import ru.graduation.repository.user.UserRepository;
+import ru.graduation.service.UserService;
 
 import java.net.URI;
 import java.util.List;
@@ -20,26 +20,26 @@ import static ru.graduation.util.ValidationUtil.checkNew;
 @RequestMapping(value = UserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
     static final String REST_URL = "/rest/admin/users";
-    private final UserRepository repository;
+    private final UserService service;
 
-    public UserController(UserRepository repository) {
-        this.repository = repository;
+    public UserController(UserService service) {
+        this.service = service;
     }
 
     @GetMapping
     public List<User> getAll() {
-        return repository.getAll();
+        return service.getAll();
     }
 
     @GetMapping("/{id}")
     public User get(@PathVariable int id) {
-        return repository.get(id);
+        return service.get(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createWithLocation(@Validated(View.Web.class) @RequestBody User user) {
         checkNew(user);
-        User created = repository.create(user);
+        User created = service.create(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -50,12 +50,12 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@Validated(View.Web.class) @RequestBody User user, @PathVariable int id) {
         assureIdConsistent(user, id);
-        repository.update(user);
+        service.update(user);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
-        repository.delete(id);
+        service.delete(id);
     }
 }

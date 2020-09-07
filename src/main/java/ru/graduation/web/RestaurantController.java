@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.graduation.View;
 import ru.graduation.model.Restaurant;
-import ru.graduation.repository.restaurant.RestaurantRepository;
+import ru.graduation.service.RestaurantService;
 
 import java.net.URI;
 import java.util.List;
@@ -21,26 +21,26 @@ import static ru.graduation.util.ValidationUtil.checkNew;
 public class RestaurantController {
     static final String REST_URL = "/rest/restaurants";
 
-    private final RestaurantRepository repository;
+    private final RestaurantService service;
 
-    public RestaurantController(RestaurantRepository repository) {
-        this.repository = repository;
+    public RestaurantController(RestaurantService service) {
+        this.service = service;
     }
 
     @GetMapping
     public List<Restaurant> getAll() {
-        return repository.getAll();
+        return service.getAll();
     }
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
-        return repository.get(id);
+        return service.get(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> createWithLocation(@Validated(View.Web.class) @RequestBody Restaurant r) {
         checkNew(r);
-        Restaurant created = repository.create(r);
+        Restaurant created = service.create(r);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -52,12 +52,12 @@ public class RestaurantController {
     public void update(@Validated(View.Web.class) @RequestBody Restaurant r,
                        @PathVariable int id) {
         assureIdConsistent(r, id);
-        repository.update(r);
+        service.update(r);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
-        repository.delete(id);
+        service.delete(id);
     }
 }

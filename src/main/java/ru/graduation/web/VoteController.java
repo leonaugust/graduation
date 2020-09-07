@@ -10,40 +10,40 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.graduation.AuthorizedUser;
 import ru.graduation.model.Vote;
-import ru.graduation.repository.vote.VoteRepository;
+import ru.graduation.service.VoteService;
 
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
 import static ru.graduation.config.AppClock.now;
-import static ru.graduation.repository.vote.VoteRepository.VOTING_CLOSED;
+import static ru.graduation.service.VoteService.VOTING_CLOSED;
 
 @RestController
 @RequestMapping(value = VoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class VoteController {
     static final String REST_URL = "/rest/votes";
 
-    private final VoteRepository repository;
+    private final VoteService service;
 
-    public VoteController(VoteRepository repository) {
-        this.repository = repository;
+    public VoteController(VoteService service) {
+        this.service = service;
     }
 
     @GetMapping
     public List<Vote> getAll(@RequestParam("restaurantId") int restaurantId) {
-        return repository.getAll(restaurantId);
+        return service.getAll(restaurantId);
     }
 
     @GetMapping("/byDate")
     public List<Vote> findAllByDate(@RequestParam("restaurantId") int restaurantId,
                                     @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return repository.findAllByDate(restaurantId, date);
+        return service.findAllByDate(restaurantId, date);
     }
 
     @GetMapping("/{id}")
     public Vote get(@PathVariable int id) {
-        return repository.get(id);
+        return service.get(id);
     }
 
     @PostMapping
@@ -53,7 +53,7 @@ public class VoteController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Voting closed");
         }
 
-        Vote created = repository.save(authUser.getId(), restaurantId);
+        Vote created = service.save(authUser.getId(), restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -63,6 +63,6 @@ public class VoteController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     private void delete(@PathVariable int id) {
-        repository.delete(id);
+        service.delete(id);
     }
 }

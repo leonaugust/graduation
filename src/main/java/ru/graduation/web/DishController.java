@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.graduation.View;
 import ru.graduation.model.Dish;
-import ru.graduation.repository.dish.DishRepository;
+import ru.graduation.service.DishService;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -23,33 +23,33 @@ import static ru.graduation.util.ValidationUtil.checkNew;
 public class DishController {
     static final String REST_URL = "/rest/dishes";
 
-    private final DishRepository dishRepository;
+    private final DishService service;
 
-    public DishController(DishRepository dishRepository) {
-        this.dishRepository = dishRepository;
+    public DishController(DishService service) {
+        this.service = service;
     }
 
     @GetMapping()
     public List<Dish> getAll(@RequestParam("restaurantId") int restaurantId) {
-        return dishRepository.getAll(restaurantId);
+        return service.getAll(restaurantId);
     }
 
     @GetMapping("/byDate")
     public List<Dish> findAllByDate(@RequestParam("restaurantId") int restaurantId,
                                     @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return dishRepository.findAllByDate(restaurantId, date);
+        return service.findAllByDate(restaurantId, date);
     }
 
     @GetMapping("/{id}")
     public Dish get(@PathVariable int id) {
-        return dishRepository.get(id);
+        return service.get(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Dish> createWithLocation(@Validated(View.Web.class) @RequestBody Dish dish,
                                                    @RequestParam("restaurantId") int restaurantId) {
         checkNew(dish);
-        Dish created = dishRepository.create(dish, restaurantId);
+        Dish created = service.create(dish, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -61,12 +61,12 @@ public class DishController {
     public void update(@Validated(View.Web.class) @RequestBody Dish dish, @PathVariable int id,
                        @RequestParam("restaurantId") int restaurantId) {
         assureIdConsistent(dish, id);
-        dishRepository.update(dish, restaurantId);
+        service.update(dish, restaurantId);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
-        dishRepository.delete(id);
+        service.delete(id);
     }
 }

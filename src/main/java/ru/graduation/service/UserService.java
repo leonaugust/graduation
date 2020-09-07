@@ -1,14 +1,15 @@
-package ru.graduation.repository.user;
+package ru.graduation.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import ru.graduation.AuthorizedUser;
 import ru.graduation.model.User;
+import ru.graduation.repository.UserRepository;
 import ru.graduation.to.UserTo;
 import ru.graduation.util.UserUtil;
 
@@ -16,22 +17,22 @@ import java.util.List;
 
 import static ru.graduation.util.ValidationUtil.checkNotFoundWithId;
 
-@Repository("userRepository")
-public class UserRepository implements UserDetailsService {
+@Service("userService")
+public class UserService implements UserDetailsService {
     private static final Sort SORT_NAME = Sort.by(Sort.Direction.ASC, "name");
 
-    private final CrudUserRepository crudRepository;
+    private final UserRepository userRepository;
 
-    private final Logger logger = LoggerFactory.getLogger(UserRepository.class);
+    private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    public UserRepository(CrudUserRepository crudRepository) {
-        this.crudRepository = crudRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     public User create(User user) {
         logger.info("create user {}", user.getId());
         Assert.notNull(user, "user must not be null");
-        return crudRepository.save(user);
+        return userRepository.save(user);
     }
 
     public User create(UserTo userTo) {
@@ -42,7 +43,7 @@ public class UserRepository implements UserDetailsService {
     public void update(User user) {
         logger.info("update user {}", user.getId());
         Assert.notNull(user, "user must not be null");
-        checkNotFoundWithId(crudRepository.save(user), user.id());
+        checkNotFoundWithId(userRepository.save(user), user.id());
     }
 
     public void update(UserTo userTo) {
@@ -50,29 +51,29 @@ public class UserRepository implements UserDetailsService {
         User user = get(userTo.id());
         UserUtil.updateFromTo(user, userTo);
         Assert.notNull(user, "user must not be null");
-        checkNotFoundWithId(crudRepository.save(user), user.id());
+        checkNotFoundWithId(userRepository.save(user), user.id());
     }
 
     public void delete(int id) {
         logger.info("delete user {}", id);
-        boolean found = crudRepository.delete(id) != 0;
+        boolean found = userRepository.delete(id) != 0;
         checkNotFoundWithId(found, id);
     }
 
     public User get(int id) {
         logger.info("get user {}", id);
-        User user = crudRepository.findById(id).orElseThrow(null);
+        User user = userRepository.findById(id).orElseThrow(null);
         return checkNotFoundWithId(user, id);
     }
 
     public List<User> getAll() {
         logger.info("getAll users");
-        return crudRepository.findAll(SORT_NAME);
+        return userRepository.findAll(SORT_NAME);
     }
 
     public AuthorizedUser loadUserByUsername(String login) throws UsernameNotFoundException {
         logger.info("load user by user name {}", login);
-        User user = crudRepository.getByLogin(login.toLowerCase());
+        User user = userRepository.getByLogin(login.toLowerCase());
         if (user == null) {
             throw new UsernameNotFoundException("User " + login + " is not found");
         }

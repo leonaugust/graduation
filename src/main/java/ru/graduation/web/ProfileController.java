@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.graduation.AuthorizedUser;
 import ru.graduation.model.User;
-import ru.graduation.repository.user.UserRepository;
+import ru.graduation.service.UserService;
 import ru.graduation.to.UserTo;
 import ru.graduation.util.UserUtil;
 
@@ -22,28 +22,28 @@ import static ru.graduation.util.ValidationUtil.checkNew;
 @RequestMapping(ProfileController.REST_URL)
 public class ProfileController {
     static final String REST_URL = "/rest/profile";
-    private final UserRepository repository;
+    private final UserService service;
 
-    public ProfileController(UserRepository repository) {
-        this.repository = repository;
+    public ProfileController(UserService service) {
+        this.service = service;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(@AuthenticationPrincipal AuthorizedUser authUser) {
-        return repository.get(authUser.getId());
+        return service.get(authUser.getId());
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthorizedUser authUser) {
-        repository.delete(authUser.getId());
+        service.delete(authUser.getId());
     }
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
         checkNew(UserUtil.createNewFromTo(userTo));
-        User created = repository.create(userTo);
+        User created = service.create(userTo);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL).build().toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
@@ -54,6 +54,6 @@ public class ProfileController {
     public void update(@Valid @RequestBody UserTo userTo,
                        @AuthenticationPrincipal AuthorizedUser authUser) {
         assureIdConsistent(userTo, authUser.getId());
-        repository.update(userTo);
+        service.update(userTo);
     }
 }

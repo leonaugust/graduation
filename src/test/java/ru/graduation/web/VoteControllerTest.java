@@ -7,7 +7,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.graduation.config.AppClock;
 import ru.graduation.model.Vote;
-import ru.graduation.repository.vote.VoteRepository;
+import ru.graduation.service.VoteService;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -28,7 +28,7 @@ public class VoteControllerTest extends AbstractControllerTest {
     private static final String REST_URL = VoteController.REST_URL + '/';
 
     @Autowired
-    private VoteRepository repository;
+    private VoteService service;
 
     @Autowired
     private AppClock clock;
@@ -86,7 +86,7 @@ public class VoteControllerTest extends AbstractControllerTest {
                 .andExpect(status().isCreated());
         Vote created = readFromJson(action, Vote.class);
 
-        assertThat(repository.get(created.getId()).getRestaurant().getName())
+        assertThat(service.get(created.getId()).getRestaurant().getName())
                 .isEqualTo(GUSTEAUS.getName());
 
         action = perform(MockMvcRequestBuilders.post(REST_URL)
@@ -95,7 +95,7 @@ public class VoteControllerTest extends AbstractControllerTest {
                 .andExpect(status().isCreated());
         Vote updated = readFromJson(action, Vote.class);
 
-        assertThat(repository.get(created.getId()).getRestaurant().getName())
+        assertThat(service.get(created.getId()).getRestaurant().getName())
                 .isEqualTo(PIZZA_PLANET.getName());
         assertThat(created.id()).isEqualTo(updated.id());
     }
