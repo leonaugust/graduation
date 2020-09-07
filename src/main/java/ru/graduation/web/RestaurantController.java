@@ -3,11 +3,9 @@ package ru.graduation.web;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.graduation.AuthorizedUser;
 import ru.graduation.View;
 import ru.graduation.model.Restaurant;
 import ru.graduation.repository.restaurant.RestaurantRepository;
@@ -40,8 +38,7 @@ public class RestaurantController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Restaurant> createWithLocation(@AuthenticationPrincipal AuthorizedUser authUser,
-                                                         @Validated(View.Web.class) @RequestBody Restaurant r) {
+    public ResponseEntity<Restaurant> createWithLocation(@Validated(View.Web.class) @RequestBody Restaurant r) {
         checkNew(r);
         Restaurant created = repository.create(r);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -52,8 +49,7 @@ public class RestaurantController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@AuthenticationPrincipal AuthorizedUser authUser,
-                       @Validated(View.Web.class) @RequestBody Restaurant r,
+    public void update(@Validated(View.Web.class) @RequestBody Restaurant r,
                        @PathVariable int id) {
         assureIdConsistent(r, id);
         repository.update(r);
@@ -61,8 +57,7 @@ public class RestaurantController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@AuthenticationPrincipal AuthorizedUser authUser,
-                       @PathVariable int id) {
+    public void delete(@PathVariable int id) {
         repository.delete(id);
     }
 }

@@ -58,14 +58,6 @@ public class VoteControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void deleteNotOwn() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + VOTE1_ID)
-                .with(userHttpBasic(ADMIN)))
-                .andDo(print())
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
     void createWithLocation() throws Exception {
         useFixedClockAt(ALLOWED_VOTING_TIME);
 

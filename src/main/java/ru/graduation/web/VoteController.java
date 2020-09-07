@@ -60,14 +60,9 @@ public class VoteController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-    // Even admins aren't allowed to delete votes of others
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    private void delete(@AuthenticationPrincipal AuthorizedUser authUser,
-                        @PathVariable int id) {
-        if (repository.get(id).getUser().getId() != authUser.getId()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the owner of the vote is allowed to do it");
-        }
+    private void delete(@PathVariable int id) {
         repository.delete(id);
     }
 }

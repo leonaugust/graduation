@@ -4,11 +4,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.graduation.AuthorizedUser;
 import ru.graduation.View;
 import ru.graduation.model.Dish;
 import ru.graduation.repository.dish.DishRepository;
@@ -48,8 +46,7 @@ public class DishController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Dish> createWithLocation(@AuthenticationPrincipal AuthorizedUser authUser,
-                                                   @Validated(View.Web.class) @RequestBody Dish dish,
+    public ResponseEntity<Dish> createWithLocation(@Validated(View.Web.class) @RequestBody Dish dish,
                                                    @RequestParam("restaurantId") int restaurantId) {
         checkNew(dish);
         Dish created = dishRepository.create(dish, restaurantId);
@@ -61,8 +58,7 @@ public class DishController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@AuthenticationPrincipal AuthorizedUser authUser,
-                       @Validated(View.Web.class) @RequestBody Dish dish, @PathVariable int id,
+    public void update(@Validated(View.Web.class) @RequestBody Dish dish, @PathVariable int id,
                        @RequestParam("restaurantId") int restaurantId) {
         assureIdConsistent(dish, id);
         dishRepository.update(dish, restaurantId);
@@ -70,8 +66,7 @@ public class DishController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@AuthenticationPrincipal AuthorizedUser authUser,
-                       @PathVariable int id) {
+    public void delete(@PathVariable int id) {
         dishRepository.delete(id);
     }
 }
