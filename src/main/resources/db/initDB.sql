@@ -14,6 +14,7 @@ CREATE TABLE users
     login    VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL
 );
+CREATE UNIQUE INDEX users_unique_login_idx ON users (login);
 
 CREATE TABLE user_role
 (
@@ -40,6 +41,8 @@ CREATE TABLE meal
     restaurant_id INTEGER      NOT NULL,
     FOREIGN KEY (restaurant_id) REFERENCES restaurant (id) ON DELETE CASCADE
 );
+CREATE UNIQUE INDEX meal_unique_restaurant_date_name_idx
+    ON meal (restaurant_id, date, name);
 
 CREATE TABLE vote
 (
