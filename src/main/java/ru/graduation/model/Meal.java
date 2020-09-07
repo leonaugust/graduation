@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "meals")
+@Table(name = "meal")
 public class Meal extends AbstractNamedEntity {
     //    https://stackoverflow.com/questions/8148684/what-data-type-to-use-for-money-in-java/43051227#43051227
     @Column(name = "price", nullable = false)

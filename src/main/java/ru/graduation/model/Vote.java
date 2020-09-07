@@ -8,8 +8,8 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(
-        columnNames = {"user_id", "date"}, name = "votes_unique_user_id_date_idx")})
+@Table(name = "vote", uniqueConstraints = {@UniqueConstraint(
+        columnNames = {"user_id", "date"}, name = "vote_unique_user_id_date_idx")})
 public class Vote extends AbstractBaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

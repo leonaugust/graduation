@@ -1,11 +1,11 @@
 DELETE
-FROM meals;
+FROM meal;
 DELETE
-FROM votes;
+FROM vote;
 DELETE
-FROM restaurants;
+FROM restaurant;
 DELETE
-FROM user_roles;
+FROM user_role;
 DELETE
 FROM users;
 ALTER SEQUENCE global_seq RESTART WITH 100000;
@@ -18,19 +18,19 @@ VALUES ('user', 'user', 'password'),
        ('ted', 'mosby', 'password');
 
 
-INSERT INTO user_roles (role, user_id)
+INSERT INTO user_role (role, user_id)
 VALUES ('USER', 100000),
        ('ADMIN', 100001),
        ('ADMIN', 100002),
        ('USER', 100003),
        ('USER', 100004);
 
-INSERT INTO restaurants (name)
+INSERT INTO restaurant (name)
 VALUES ('Gusteau''s'),
        ('Pizza Planet'),
        ('The Krusty Krab ');
 
-INSERT INTO meals (name, price, date, restaurant_id)
+INSERT INTO meal (name, price, date, restaurant_id)
 VALUES ('Ratatouille', 250, '2020-08-14', 100005),
        ('Buffalo Wings', 300, '2020-08-14', 100005),
        ('Charbroiled Oysters', 270, '2020-08-14', 100005),
@@ -49,7 +49,7 @@ VALUES ('Ratatouille', 250, '2020-08-14', 100005),
        ('Bacon Cheeseburger', 70, '2020-08-14', 100007),
        ('Bob''s Burger Barn', 623, '2020-08-14', 100007);
 
-INSERT INTO votes(user_id, date, restaurant_id)
+INSERT INTO vote (user_id, date, restaurant_id)
 VALUES (100000, '2020-08-14', 100005),
        (100001, '2020-08-14', 100005),
        (100002, '2020-08-14', 100006),
