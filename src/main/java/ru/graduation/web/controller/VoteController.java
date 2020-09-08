@@ -1,4 +1,4 @@
-package ru.graduation.web;
+package ru.graduation.web.controller;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;

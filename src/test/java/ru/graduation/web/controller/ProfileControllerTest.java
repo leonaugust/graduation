@@ -1,4 +1,4 @@
-package ru.graduation.web;
+package ru.graduation.web.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.graduation.TestUtil.userHttpBasic;
 import static ru.graduation.testdata.UserTestData.*;
 import static ru.graduation.util.UserUtil.asTo;
-import static ru.graduation.web.ProfileController.REST_URL;
+import static ru.graduation.web.controller.ProfileController.REST_URL;
 
 public class ProfileControllerTest extends AbstractControllerTest {
 
