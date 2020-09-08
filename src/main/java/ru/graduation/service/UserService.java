@@ -2,10 +2,13 @@ package ru.graduation.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.graduation.AuthorizedUser;
 import ru.graduation.model.User;
@@ -18,6 +21,7 @@ import java.util.List;
 import static ru.graduation.util.ValidationUtil.checkNotFoundWithId;
 
 @Service("userService")
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserService implements UserDetailsService {
     private static final Sort SORT_NAME = Sort.by(Sort.Direction.ASC, "name");
 
@@ -46,6 +50,7 @@ public class UserService implements UserDetailsService {
         checkNotFoundWithId(userRepository.save(user), user.id());
     }
 
+    @Transactional
     public void update(UserTo userTo) {
         logger.info("update user");
         User user = get(userTo.id());

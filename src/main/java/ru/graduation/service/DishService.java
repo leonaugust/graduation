@@ -3,6 +3,7 @@ package ru.graduation.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.graduation.model.Dish;
 import ru.graduation.repository.DishRepository;
@@ -27,6 +28,7 @@ public class DishService {
         this.restaurantRepository = restaurantRepository;
     }
 
+    @Transactional
     public Dish create(Dish dish, int restaurantId) {
         logger.info("create dish {}", dish.getId());
         Assert.notNull(dish, "dish must not be null");
@@ -37,6 +39,7 @@ public class DishService {
         return dishRepository.save(dish);
     }
 
+    @Transactional
     public void update(Dish dish, int restaurantId) {
         logger.info("update dish {}, restaurantId {}", dish.getId(), restaurantId);
         Assert.notNull(dish, "dish must not be null");

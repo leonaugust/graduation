@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import ru.graduation.model.Restaurant;
 import ru.graduation.model.Vote;
@@ -37,6 +38,7 @@ public class VoteService {
         this.userRepository = userRepository;
     }
 
+    @Transactional
     public Vote save(int userId, int restaurantId) {
         logger.info("save vote, userId {}, restaurantId {}", userId, restaurantId);
         LocalDate today = LocalDate.now(getClock());
