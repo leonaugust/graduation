@@ -2,7 +2,10 @@ package ru.graduation.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import ru.graduation.model.Restaurant;
 import ru.graduation.model.Vote;
 import ru.graduation.repository.RestaurantRepository;
 import ru.graduation.repository.UserRepository;
@@ -13,6 +16,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static ru.graduation.config.AppClock.getClock;
+import static ru.graduation.config.AppClock.now;
 import static ru.graduation.util.ValidationUtil.checkNotFoundWithId;
 
 @Service
@@ -35,16 +39,19 @@ public class VoteService {
 
     public Vote save(int userId, int restaurantId) {
         logger.info("save vote, userId {}, restaurantId {}", userId, restaurantId);
-        Vote existing = findByUserId(userId);
-        if (existing != null) {
-            existing.setRestaurant(restaurantRepository.getOne(restaurantId));
-            return voteRepository.save(existing);
+        LocalDate today = LocalDate.now(getClock());
+        Restaurant restaurant = restaurantRepository.getOne(restaurantId);
+        Vote vote = findByUserIdAndDate(userId, today);
+
+        if (now().isAfter(VOTING_CLOSED) && !vote.isNew()) {
+            throw new ResponseStatusException(HttpStatus.LOCKED, "Voting closed");
         }
 
-        Vote vote = new Vote();
-        vote.setDate(LocalDate.now(getClock()));
-        vote.setRestaurant(restaurantRepository.getOne(restaurantId));
-        vote.setUser(userRepository.getOne(userId));
+        if (vote.isNew()) {
+            vote = new Vote(userRepository.getOne(userId), today, restaurant);
+        } else {
+            vote.setRestaurant(restaurant);
+        }
         return voteRepository.save(vote);
     }
 
@@ -60,9 +67,13 @@ public class VoteService {
         return checkNotFoundWithId(vote, id);
     }
 
-    public Vote findByUserId(int userId) {
-        logger.info("find vote, userId {}", userId);
-        return voteRepository.findByUserId(userId).orElse(null);
+    public Vote findByUserIdAndDate(int userId, LocalDate date) {
+        logger.info("find vote, userId {}, date {}", userId, date);
+        Vote vote = voteRepository.findByUserIdAndDate(userId, date);
+        if (vote == null) {
+            return new Vote();
+        }
+        return vote;
     }
 
     public List<Vote> getAll(int restaurantId) {

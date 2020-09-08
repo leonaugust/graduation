@@ -10,7 +10,6 @@ import ru.graduation.model.Vote;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Transactional(readOnly = true)
 @Repository
@@ -27,6 +26,7 @@ public interface VoteRepository extends JpaRepository<Vote, Integer> {
     List<Vote> findAllByDate(@Param("restaurantId") int restaurantId,
                              @Param("date") LocalDate date);
 
-    @Query("SELECT v FROM Vote v WHERE v.user.id=:userId")
-    Optional<Vote> findByUserId(@Param("userId") int userId);
+    @Query("SELECT v FROM Vote v WHERE v.user.id=:userId AND v.date=:date")
+    Vote findByUserIdAndDate(@Param("userId") int userId,
+                             @Param("date") LocalDate date);
 }

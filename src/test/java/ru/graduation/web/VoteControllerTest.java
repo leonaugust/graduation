@@ -20,8 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.graduation.TestUtil.readFromJson;
 import static ru.graduation.TestUtil.userHttpBasic;
 import static ru.graduation.testdata.RestaurantTestData.*;
-import static ru.graduation.testdata.UserTestData.ADMIN;
-import static ru.graduation.testdata.UserTestData.USER;
+import static ru.graduation.testdata.UserTestData.*;
 import static ru.graduation.testdata.VoteTestData.*;
 
 public class VoteControllerTest extends AbstractControllerTest {
@@ -61,26 +60,36 @@ public class VoteControllerTest extends AbstractControllerTest {
     void createWithLocation() throws Exception {
         useFixedClockAt(ALLOWED_VOTING_TIME);
 
-        perform(MockMvcRequestBuilders.post(REST_URL)
+        perform(MockMvcRequestBuilders.put(REST_URL)
                 .with(userHttpBasic(USER))
                 .param("restaurantId", String.valueOf(GUSTEAUS_ID)))
                 .andExpect(status().isCreated());
     }
 
     @Test
+    void updateWhenClosed() throws Exception {
+        useFixedClockAt(TIME_AFTER_VOTING);
+
+        perform(MockMvcRequestBuilders.put(REST_URL)
+                .with(userHttpBasic(USER))
+                .param("restaurantId", String.valueOf(GUSTEAUS_ID)))
+                .andExpect(status().isLocked());
+    }
+
+    @Test
     void createWhenClosed() throws Exception {
         useFixedClockAt(TIME_AFTER_VOTING);
 
-        perform(MockMvcRequestBuilders.post(REST_URL)
-                .with(userHttpBasic(USER))
+        perform(MockMvcRequestBuilders.put(REST_URL)
+                .with(userHttpBasic(TED))
                 .param("restaurantId", String.valueOf(GUSTEAUS_ID)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isCreated());
     }
 
     @Test
     void createChangedOpinion() throws Exception {
         useFixedClockAt(ALLOWED_VOTING_TIME);
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+        ResultActions action = perform(MockMvcRequestBuilders.put(REST_URL)
                 .with(userHttpBasic(USER))
                 .param("restaurantId", String.valueOf(GUSTEAUS_ID)))
                 .andExpect(status().isCreated());
@@ -89,7 +98,7 @@ public class VoteControllerTest extends AbstractControllerTest {
         assertThat(service.get(created.getId()).getRestaurant().getName())
                 .isEqualTo(GUSTEAUS.getName());
 
-        action = perform(MockMvcRequestBuilders.post(REST_URL)
+        action = perform(MockMvcRequestBuilders.put(REST_URL)
                 .with(userHttpBasic(USER))
                 .param("restaurantId", String.valueOf(PIZZA_PLANET_ID)))
                 .andExpect(status().isCreated());

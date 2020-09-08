@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.graduation.AuthorizedUser;
 import ru.graduation.model.Vote;
@@ -15,9 +14,6 @@ import ru.graduation.service.VoteService;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
-
-import static ru.graduation.config.AppClock.now;
-import static ru.graduation.service.VoteService.VOTING_CLOSED;
 
 @RestController
 @RequestMapping(value = VoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,13 +42,9 @@ public class VoteController {
         return service.get(id);
     }
 
-    @PostMapping
+    @PutMapping
     public ResponseEntity<Vote> createWithLocation(@AuthenticationPrincipal AuthorizedUser authUser,
                                                    @RequestParam("restaurantId") int restaurantId) {
-        if (now().isAfter(VOTING_CLOSED)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Voting closed");
-        }
-
         Vote created = service.save(authUser.getId(), restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
