@@ -51,9 +51,17 @@ public class VoteControllerTest extends AbstractControllerTest {
     @Test
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + VOTE1_ID)
-                .with(userHttpBasic(USER)))
+                .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteNotAllowed() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + VOTE1_ID)
+                .with(userHttpBasic(USER)))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
 
     @Test

@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.graduation.TestUtil.userHttpBasic;
 import static ru.graduation.testdata.RestaurantTestData.*;
 import static ru.graduation.testdata.UserTestData.ADMIN;
+import static ru.graduation.testdata.UserTestData.USER;
 
 public class RestaurantControllerTest extends AbstractControllerTest {
     private static final String REST_URL = RestaurantController.REST_URL + '/';
@@ -41,6 +42,14 @@ public class RestaurantControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void deleteNotAllowed() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + KRUSTY_KRAB_ID)
+                .with(userHttpBasic(USER)))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void update() throws Exception {
         Restaurant updated = getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + KRUSTY_KRAB_ID)
@@ -51,6 +60,16 @@ public class RestaurantControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void updateNotAllowed() throws Exception {
+        Restaurant updated = getUpdated();
+        perform(MockMvcRequestBuilders.put(REST_URL + KRUSTY_KRAB_ID)
+                .with(userHttpBasic(USER))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void createWithLocation() throws Exception {
         Restaurant newRestaurant = getNew();
         perform(MockMvcRequestBuilders.post(REST_URL)
@@ -58,6 +77,16 @@ public class RestaurantControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newRestaurant)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void createNotAllowed() throws Exception {
+        Restaurant newRestaurant = getNew();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(USER))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newRestaurant)))
+                .andExpect(status().isForbidden());
     }
 
     @Test

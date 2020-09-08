@@ -14,6 +14,7 @@
 
     <beans:bean name="noopEncoder" class="org.springframework.security.crypto.password.NoOpPasswordEncoder"/>
 
+    <global-method-security pre-post-annotations="enabled"/>
     <authentication-manager>
         <authentication-provider user-service-ref="userService">
             <password-encoder ref="noopEncoder"/>
