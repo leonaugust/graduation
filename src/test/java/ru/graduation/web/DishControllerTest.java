@@ -91,10 +91,19 @@ public class DishControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void findAllByDate() throws Exception {
+    void findMenuByDate() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + "byDate")
                 .with(userHttpBasic(ADMIN))
                 .param("restaurantId", String.valueOf(GUSTEAUS_ID))
+                .param("date", "2020-08-14"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void findAllForDate() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "/all")
+                .with(userHttpBasic(ADMIN))
                 .param("date", "2020-08-14"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));

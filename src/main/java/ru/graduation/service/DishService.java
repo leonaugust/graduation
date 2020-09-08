@@ -67,8 +67,13 @@ public class DishService {
         return dishRepository.getAll(restaurantId);
     }
 
-    public List<Dish> findAllByDate(int restaurantId, LocalDate date) {
+    public List<Dish> findMenuByDate(int restaurantId, LocalDate date) {
+        logger.info("findMenu by date");
+        return dishRepository.findMenuByDate(restaurantId, date);
+    }
+
+    public List<Dish> findAllForDate(LocalDate date) {
         logger.info("findAll dishes by date");
-        return dishRepository.findAllByDate(restaurantId, date);
+        return dishRepository.findAllForDate(date);
     }
 }

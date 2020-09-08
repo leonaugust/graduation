@@ -35,9 +35,14 @@ public class DishController {
     }
 
     @GetMapping("/byDate")
-    public List<Dish> findAllByDate(@RequestParam("restaurantId") int restaurantId,
-                                    @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return service.findAllByDate(restaurantId, date);
+    public List<Dish> findMenuByDate(@RequestParam("restaurantId") int restaurantId,
+                                     @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return service.findMenuByDate(restaurantId, date);
+    }
+
+    @GetMapping("/all")
+    public List<Dish> findAllForDate(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return service.findAllForDate(date);
     }
 
     @GetMapping("/{id}")
