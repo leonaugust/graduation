@@ -46,7 +46,7 @@ public class VoteService {
         Vote vote = findByUserIdAndDate(userId, today);
 
         if (now().isAfter(VOTING_CLOSED) && !vote.isNew()) {
-            throw new VotingClosedException("Voting closed");
+            throw new VotingClosedException("Voting closed and you already voted for restaurant " + vote.getRestaurant().getId());
         }
 
         if (vote.isNew()) {
