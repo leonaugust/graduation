@@ -7,6 +7,7 @@ import static ru.graduation.model.AbstractBaseEntity.START_SEQ;
 
 public class VoteTestData {
 
+    public static final int NOT_FOUND = 10;
     public static final int VOTE1_ID = START_SEQ + 23;
 
     public static final LocalDateTime TIME_AFTER_VOTING = LocalDateTime.of(2020, Month.AUGUST, 14, 11, 5);

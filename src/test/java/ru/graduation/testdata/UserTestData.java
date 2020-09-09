@@ -6,6 +6,7 @@ import ru.graduation.model.User;
 import java.util.Collections;
 
 public class UserTestData {
+    public static final int NOT_FOUND = 10;
     public static final int USER_ID = User.START_SEQ;
     public static final int ADMIN_ID = User.START_SEQ + 1;
     public static final int BARNEY_ID = User.START_SEQ + 2;

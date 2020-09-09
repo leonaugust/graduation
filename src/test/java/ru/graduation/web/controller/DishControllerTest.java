@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.graduation.TestUtil.readFromJson;
 import static ru.graduation.TestUtil.userHttpBasic;
 import static ru.graduation.testdata.DishTestData.DISH1_ID;
+import static ru.graduation.testdata.DishTestData.NOT_FOUND;
 import static ru.graduation.testdata.RestaurantTestData.GUSTEAUS_ID;
 import static ru.graduation.testdata.UserTestData.ADMIN;
 import static ru.graduation.testdata.UserTestData.USER;
@@ -33,6 +34,14 @@ public class DishControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND)
+                .with(userHttpBasic(ADMIN))
+                .param("restaurantId", String.valueOf(GUSTEAUS_ID)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void getUnAuth() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + DISH1_ID))
                 .andExpect(status().isUnauthorized());
@@ -44,6 +53,14 @@ public class DishControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + NOT_FOUND)
+                .with(userHttpBasic(ADMIN)))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 
     @Test

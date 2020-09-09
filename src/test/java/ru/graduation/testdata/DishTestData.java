@@ -9,6 +9,7 @@ import static ru.graduation.model.AbstractBaseEntity.START_SEQ;
 
 public class DishTestData {
 
+    public static final int NOT_FOUND = 10;
     public static final int DISH1_ID = START_SEQ + 8;
 
     public static Dish getNew() {

@@ -6,6 +6,7 @@ import static ru.graduation.model.AbstractBaseEntity.START_SEQ;
 
 public class RestaurantTestData {
 
+    public static final int NOT_FOUND = 10;
     public static final int GUSTEAUS_ID = START_SEQ + 5;
     public static final int PIZZA_PLANET_ID = START_SEQ + 6;
     public static final int KRUSTY_KRAB_ID = START_SEQ + 7;
