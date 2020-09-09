@@ -3,6 +3,7 @@ package ru.graduation.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import ru.graduation.model.Restaurant;
@@ -25,18 +26,21 @@ public class RestaurantService {
         this.restaurantRepository = restaurantRepository;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public Restaurant create(Restaurant r) {
         logger.info("create restaurant {}", r.getId());
         Assert.notNull(r, "restaurant must not be null");
         return restaurantRepository.save(r);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void update(Restaurant r) {
         logger.info("update restaurant {}", r.getId());
         Assert.notNull(r, "restaurant must not be null");
         checkNotFoundWithId(restaurantRepository.save(r), r.id());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(int id) {
         logger.info("delete restaurant {}", id);
         boolean found = restaurantRepository.delete(id) != 0;

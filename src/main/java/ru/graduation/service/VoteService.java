@@ -2,6 +2,7 @@ package ru.graduation.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.graduation.model.Restaurant;
@@ -57,6 +58,7 @@ public class VoteService {
         return voteRepository.save(vote);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(int id) {
         logger.info("delete vote {}", id);
         boolean found = voteRepository.delete(id) != 0;

@@ -2,6 +2,7 @@ package ru.graduation.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -29,6 +30,8 @@ public class DishService {
         this.restaurantRepository = restaurantRepository;
     }
 
+    //    https://stackoverflow.com/a/32443631
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public Dish create(Dish dish, int restaurantId) {
         logger.info("create dish {}", dish.getId());
@@ -40,6 +43,7 @@ public class DishService {
         return dishRepository.save(dish);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void update(Dish dish, int restaurantId) {
         logger.info("update dish {}, restaurantId {}", dish.getId(), restaurantId);
@@ -51,6 +55,7 @@ public class DishService {
         checkNotFoundWithId(dishRepository.save(dish), dish.id());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(int id) {
         logger.info("delete dish {}", id);
         boolean found = dishRepository.delete(id) != 0;
