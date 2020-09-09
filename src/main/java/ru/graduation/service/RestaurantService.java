@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import ru.graduation.model.Restaurant;
 import ru.graduation.repository.RestaurantRepository;
+import ru.graduation.util.exception.NotFoundException;
 
 import java.util.List;
 
@@ -44,7 +45,8 @@ public class RestaurantService {
 
     public Restaurant get(int id) {
         logger.info("get restaurant {}", id);
-        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(null);
+        Restaurant restaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Restaurant not found with id = " + id));
         return checkNotFoundWithId(restaurant, id);
     }
 

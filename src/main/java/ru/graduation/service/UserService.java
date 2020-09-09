@@ -15,6 +15,7 @@ import ru.graduation.model.User;
 import ru.graduation.repository.UserRepository;
 import ru.graduation.to.UserTo;
 import ru.graduation.util.UserUtil;
+import ru.graduation.util.exception.NotFoundException;
 
 import java.util.List;
 
@@ -67,7 +68,8 @@ public class UserService implements UserDetailsService {
 
     public User get(int id) {
         logger.info("get user {}", id);
-        User user = userRepository.findById(id).orElseThrow(null);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found with id = " + id));
         return checkNotFoundWithId(user, id);
     }
 

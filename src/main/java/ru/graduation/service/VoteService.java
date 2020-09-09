@@ -2,15 +2,15 @@ package ru.graduation.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 import ru.graduation.model.Restaurant;
 import ru.graduation.model.Vote;
 import ru.graduation.repository.RestaurantRepository;
 import ru.graduation.repository.UserRepository;
 import ru.graduation.repository.VoteRepository;
+import ru.graduation.util.exception.NotFoundException;
+import ru.graduation.util.exception.VotingClosedException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -46,7 +46,7 @@ public class VoteService {
         Vote vote = findByUserIdAndDate(userId, today);
 
         if (now().isAfter(VOTING_CLOSED) && !vote.isNew()) {
-            throw new ResponseStatusException(HttpStatus.LOCKED, "Voting closed");
+            throw new VotingClosedException("Voting closed");
         }
 
         if (vote.isNew()) {
@@ -65,7 +65,8 @@ public class VoteService {
 
     public Vote get(int id) {
         logger.info("get vote {}", id);
-        Vote vote = voteRepository.findById(id).orElseThrow(null);
+        Vote vote = voteRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Vote not found with id = " + id));
         return checkNotFoundWithId(vote, id);
     }
 

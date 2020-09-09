@@ -8,6 +8,7 @@ import org.springframework.util.Assert;
 import ru.graduation.model.Dish;
 import ru.graduation.repository.DishRepository;
 import ru.graduation.repository.RestaurantRepository;
+import ru.graduation.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -58,7 +59,8 @@ public class DishService {
 
     public Dish get(int id) {
         logger.info("get dish {}", id);
-        Dish dish = dishRepository.findById(id).orElseThrow(null);
+        Dish dish = dishRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Dish not found with id = " + id));
         return checkNotFoundWithId(dish, id);
     }
 
