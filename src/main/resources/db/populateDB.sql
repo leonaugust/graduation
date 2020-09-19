@@ -11,11 +11,11 @@ FROM users;
 ALTER SEQUENCE global_seq RESTART WITH 100000;
 
 INSERT INTO users (name, login, password)
-VALUES ('user', 'user', 'password'),
-       ('admin', 'admin', 'password'),
-       ('barney', 'stinson', 'password'),
-       ('lily', 'aldrin', 'password'),
-       ('ted', 'mosby', 'password');
+VALUES ('user', 'user', '{noop}password'),
+       ('admin', 'admin', '{noop}password'),
+       ('barney', 'stinson', '{noop}password'),
+       ('lily', 'aldrin', '{noop}password'),
+       ('ted', 'mosby', '{noop}password');
 
 
 INSERT INTO user_role (role, user_id)
